@@ -1,0 +1,27 @@
+{
+  "name": "Iron Wallet",
+  "description": "A dev-oriented web3 wallet",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["activeTab", "scripting", "storage"],
+  "background": {
+    "service_worker": "background/index.ts",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "js": ["content_script/index.ts"],
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["expanded.html", "inpage/index.ts"]
+    }
+  ]
+}
