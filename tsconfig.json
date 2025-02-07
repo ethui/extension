@@ -1,6 +1,28 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
+    "composite": true,
+    "target": "es2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "rewriteRelativeImportExtensions": true,
+
+    "types": ["node"],
     "typeRoots": [
       "./node_modules/@types",
       "../node_modules/@types",
@@ -11,6 +33,6 @@
     },
     "types": ["node", "vite/client"]
   },
-  "include": ["src", "vite"],
+  "include": ["src", "vite", "vite.config.ts"],
   "exclude": ["dist", "node_modules", "../node_modules"]
 }
