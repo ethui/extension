@@ -69,7 +69,7 @@ function initProviderForward() {
  * The inpage script is responsible for providing the `window.ethereum` object,
  * which will connect to the stream being forward by this content script
  */
-export function injectInPageScript() {
+function injectInPageScript() {
   const url = runtime.getURL("inpage/inpage.js");
 
   try {

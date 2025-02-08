@@ -3,8 +3,6 @@ import type { Json, JsonRpcParams } from "@metamask/utils";
 import { ethErrors } from "eth-rpc-errors";
 import log from "loglevel";
 
-export type Maybe<T> = T | null | undefined;
-
 export const name = import.meta.env.PROD ? "ethui" : "ethui-dev";
 
 /**

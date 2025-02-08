@@ -13,11 +13,3 @@ export interface Response {
   tabId: number;
   data: JsonRpcResponse<Json>;
 }
-
-export interface Start {
-  type: "start";
-  tabId: number;
-  data?: Array<Request | Response>;
-}
-
-export type Msg = Request | Response;

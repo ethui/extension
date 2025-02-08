@@ -12,7 +12,7 @@ let settings: Settings = defaultSettings;
 /**
  * Loads the current settings, and listens for incoming connections (from the injected contentscript)
  */
-export async function init() {
+async function init() {
   settings = await loadSettings();
   log.setLevel(settings.logLevel);
 
@@ -62,7 +62,7 @@ async function notifyDevtools(
  * The WS connection is created lazily (when the first data packet is sent).
  * This behaviour prevents initiating connections for browser tabs where `window.ethereum` is not actually used
  */
-export function setupProviderConnection(port: Runtime.Port) {
+function setupProviderConnection(port: Runtime.Port) {
   const tab = port.sender!.tab!;
   const tabId = tab.id!;
   const url = tab.url;

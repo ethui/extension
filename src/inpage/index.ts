@@ -23,7 +23,7 @@ init();
  * This can never be async, otherwise window.ethereum won't be injected in time
  * for page load
  */
-export function init() {
+function init() {
   initializeProvider();
 }
 
@@ -32,7 +32,7 @@ export function init() {
  * conntected to a `WindowPostMessageStream`
  * returns The initialized provider (whether set or not).
  */
-export function initializeProvider() {
+function initializeProvider() {
   const connectionStream = new WindowPostMessageStream({
     name: `${name}:inpage`,
     target: `${name}:contentscript`,

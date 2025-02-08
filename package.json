@@ -11,7 +11,11 @@
     "dev:firefox": "tsx ./scripts/build.ts --target firefox-dev",
     "watch:chrome": "tsx watch --include src --include manifest --include 'vite/*.ts' --include package.json ./scripts/build.ts --target chrome-dev",
     "watch:firefox": "tsx watch --include src --include manifest --include 'vite/*.ts' --include package.json ./scripts/build.ts --target firefox-dev",
-    "build": "tsx ./scripts/build.ts \"$@\""
+    "build": "tsx ./scripts/build.ts \"$@\"",
+    "lint": "yarn lint:biome && yarn lint:tsc && yarn lint:unused",
+    "lint:biome": "biome check .",
+    "lint:tsc": "tsc --noEmit",
+    "lint:unused": "ts-unused-exports tsconfig.json --ignoreFiles=./vite/{base,content,background,inpage,utils}.ts"
   },
   "dependencies": {
     "@devtools-ds/object-inspector": "^1.2.1",
@@ -48,6 +52,7 @@
     "json5": "^2.2.3",
     "postcss": "^8.5.1",
     "ts-node": "^10.9.2",
+    "ts-unused-exports": "^11.0.1",
     "tsx": "^4.19.2",
     "typescript": "5.7.3",
     "vite": "^6.0.11",
