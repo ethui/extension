@@ -1,0 +1,121 @@
+name: release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.sha }}
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get-tag.outputs.tag }}
+      version: ${{ steps.get-version.outputs.version }}
+      release_id: ${{ steps.get-id.outputs.id }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # get the current draft release
+      - id: get-tag
+        name: get tag
+        run: |
+          echo "tag=$(gh api /repos/ethui/extension/releases |\
+            jq -r '.[] | select(.draft == true) | .tag_name')" \
+            >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # get the current version (tag without the `v`)
+      - id: get-version
+        name: get version
+        run: |
+          version=$(echo ${{ steps.get-tag.outputs.tag }} | sed 's/^v//')
+          echo "version=$version" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # get the current release_id
+      - id: get-id
+        name: get release ID
+        run: |
+          echo "id=$(gh api /repos/ethui/extension/releases |\
+            jq -r '.[] | select(.draft == true) | .id')" \
+            >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # deletes all assets previously uploaded to the current draft release
+  # necessary if we have to retry a release build due to a prior failure
+  clear-assets:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          for name in $(gh release view ${{needs.setup.outputs.tag}} --json assets | jq -r '.assets[].name'); do
+            gh release delete-asset ${{needs.setup.outputs.tag}} $name
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # build extension
+  # upload to draft release
+  # release to mozilla and google stores
+  extension:
+    needs: [setup, app]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: npm install -g yarn
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: "yarn"
+          node-version: "22"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Create chrome bundle
+        run: yarn build --target chrome -v ${{ needs.setup.outputs.version }}
+
+      - name: Create firefox bundle
+        run: yarn build --target firefox -v ${{ needs.setup.outputs.version }}
+
+      - name: Upload to release
+        run: gh release upload ${{ needs.setup.outputs.tag }} ./extension/dist/*.{crx,xpi}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Submit to Google
+        run: npx chrome-webstore-upload-cli@2 upload --source ./extension/dist/chrome --auto-publish
+        continue-on-error: true
+        env:
+          EXTENSION_ID: ${{ secrets.CHROME_WEB_EXT_ID }}
+          CLIENT_ID: ${{ secrets.CHROME_WEB_EXT_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CHROME_WEB_EXT_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.CHROME_WEB_EXT_REFRESH_TOKEN }}
+
+      - name: Submit to Mozilla
+        run: yarn run web-ext sign --channel listed --source-dir ./dist/firefox
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_WEB_EXT_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_WEB_EXT_API_SECRET }}
+
+  publish:
+    needs: [setup, extension, app]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: publish release
+        run: gh release edit ${{ needs.setup.outputs.tag }} --draft=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
