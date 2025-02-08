@@ -85,8 +85,8 @@ jobs:
       - name: Submit to Mozilla
         run: yarn run web-ext sign --channel listed --source-dir ./dist/firefox
         env:
-          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_WEB_EXT_API_KEY }}
-          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_WEB_EXT_API_SECRET }}
+          WEB_EXT_API_KEY: ${{ secrets.MOZILLA_WEB_EXT_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.MOZILLA_WEB_EXT_API_SECRET }}
 
   publish:
     needs: [setup, extension, app]
