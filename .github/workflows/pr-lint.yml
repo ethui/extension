@@ -8,6 +8,7 @@ on:
       - unlabeled
       - opened
       - reopened
+  merge_group:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -19,6 +20,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - id: pr-number
+        shell: bash
+        run: |
+          if [ ${{ github.event_name }} == 'pull_request' ]
+          then
+            echo "Event type: pull request"
+            pr=${{ github.event.number }}
+          elif [ ${{ github.event_name }} == 'merge_group' ]
+          then
+            echo "Event type: merge queue"
+            pr=$(echo ${{ github.event.merge_group.head_ref }} | grep -Eo "queue/main/pr-[0-9]+" | cut -d '-' -f2)
+          else
+            echo "Event type: unknown or unexpected"
+          fi
+
+          # Validate PR number
+          if [[ ! "${pr}" =~ ^[0-9]+$ ]]; then
+            echo "PR number format incorrect: ${pr}"
+            exit 1
+          fi
+
+          # Output PR number
+          echo "Summary ---"
+          echo -e "\tPR: ${pr}"
+          echo "pr=${pr}" >> $GITHUB_OUTPUT
+
       - name: Get release-drafter config
         id: current-labels
         run: |
@@ -28,7 +55,7 @@ jobs:
       - name: Check PR labels
         id: check-labels
         run: |
-          PR_LABELS=$(gh pr view ${{ github.event.pull_request.number }} --json labels -q '.labels[].name')
+          PR_LABELS=$(gh pr view ${{ steps.pr-number.outputs.pr }} --json labels -q '.labels[].name')
           MATCH_FOUND=0
 
           for label in $PR_LABELS; do
