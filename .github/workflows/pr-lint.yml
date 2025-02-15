@@ -16,4 +16,4 @@ concurrency:
 
 jobs:
   enforce-labels:
-    uses: ethui/workflows/pr-lint.yml@main
+    uses: ethui/workflows/.github/workflows/pr-lint.yml@main
