@@ -570,17 +570,17 @@
     json-rpc-random-id "^1.0.1"
     pify "^5.0.0"
 
-"@metamask/eth-json-rpc-middleware@^15.1.2":
-  version "15.1.2"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-json-rpc-middleware/-/eth-json-rpc-middleware-15.1.2.tgz#1e9e8b91cf7d33665122ced669a3db15757a3e2a"
-  integrity sha512-36Mk+aL2SlQpd8GGLb5aT1aKl9LqgYzwOf2lyMsTPMTN2pgZvguReQJ/g76XSFh0quUgSrEUzjI862x+sd8ygw==
+"@metamask/eth-json-rpc-middleware@^15.2.0":
+  version "15.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-json-rpc-middleware/-/eth-json-rpc-middleware-15.2.0.tgz#9b14aa566ae95d2eb19cc4a1f89f937a9028ac4e"
+  integrity sha512-5fcL7m/LKwSjlOqOSsVmjSgWIOy5GE0hxpoSmbcYHhQuYWiLYRtdNi9iPif6+tO8PdIabgxqrvoLND6Iz8RixQ==
   dependencies:
     "@metamask/eth-block-tracker" "^11.0.4"
     "@metamask/eth-json-rpc-provider" "^4.1.7"
     "@metamask/eth-sig-util" "^8.1.2"
     "@metamask/json-rpc-engine" "^10.0.2"
     "@metamask/rpc-errors" "^7.0.2"
-    "@metamask/utils" "^11.0.1"
+    "@metamask/utils" "^11.1.0"
     "@types/bn.js" "^5.1.5"
     bn.js "^5.2.1"
     klona "^2.0.6"
@@ -620,14 +620,14 @@
     "@metamask/safe-event-emitter" "^3.0.0"
     "@metamask/utils" "^11.1.0"
 
-"@metamask/json-rpc-middleware-stream@^8.0.6":
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/@metamask/json-rpc-middleware-stream/-/json-rpc-middleware-stream-8.0.6.tgz#3b8a6ccbdee2176285b05a3fe644d5f9a602669a"
-  integrity sha512-wE2CfuNZHnWbSjLEPCCb4MSyWgbQBUI5cslGZb+uRdXNzYOM/RDfq8FAdl6HhjmldHKdBFCW0L3kDr8frgahqA==
+"@metamask/json-rpc-middleware-stream@^8.0.7":
+  version "8.0.7"
+  resolved "https://registry.yarnpkg.com/@metamask/json-rpc-middleware-stream/-/json-rpc-middleware-stream-8.0.7.tgz#5a6647a602abe23ff00cd94a219a232e6b926e70"
+  integrity sha512-s7ugj+b4QYkQ+3VjRDdsp8GfKOKrxvI6HzaZg4TJrfSV+SO/Ky4TGo4Aib1gtv3/8muCPYAPGtjFVYWVAVJ6jw==
   dependencies:
-    "@metamask/json-rpc-engine" "^10.0.2"
+    "@metamask/json-rpc-engine" "^10.0.3"
     "@metamask/safe-event-emitter" "^3.0.0"
-    "@metamask/utils" "^11.0.1"
+    "@metamask/utils" "^11.1.0"
     readable-stream "^3.6.2"
 
 "@metamask/post-message-stream@^9.0.0":
@@ -661,10 +661,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/superstruct/-/superstruct-3.1.0.tgz#148f786a674fba3ac885c1093ab718515bf7f648"
   integrity sha512-N08M56HdOgBfRKkrgCMZvQppkZGcArEop3kixNEtVbJKm6P9Cfg0YkI6X0s1g78sNrj2fWUwvJADdZuzJgFttA==
 
-"@metamask/utils@^11.0.1", "@metamask/utils@^11.1.0":
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/utils/-/utils-11.1.0.tgz#dff87ea40f25db24e7242234501794b30ba59a09"
-  integrity sha512-lhR3sEZisT6hVBrnS3Ftgg9FRUFca0/5fcxDA+5paqLo4YYE6euV7622l0Qi3yMwy4mlgrrDTBiPSTXtCUKrdg==
+"@metamask/utils@^11.0.1", "@metamask/utils@^11.1.0", "@metamask/utils@^11.2.0":
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/utils/-/utils-11.2.0.tgz#f2b35cbe6536c56071b0971f97f2395b860885c4"
+  integrity sha512-5Y4bd8Axvi2kJKjp6Jlbb9wyoTrSZxQjWvVGPevpErAc7SCUYUuW0QOOPVu7YmT+bzisTpnFnRE8LjtwYCKGAg==
   dependencies:
     "@ethereumjs/tx" "^4.2.0"
     "@metamask/superstruct" "^3.1.0"
