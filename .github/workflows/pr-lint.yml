@@ -59,14 +59,14 @@ jobs:
           MATCH_FOUND=0
 
           for label in $PR_LABELS; do
-            if [[ "${{ steps.current-labels.outputs.labels }}" =~ "$label" ]]; then
+            if [[ "$label" =~ ${{ steps.current-labels.outputs.labels }}" ]]; then
               MATCH_FOUND=1
               break
             fi
           done
 
           if [[ ! $MATCH_FOUND -eq 1 ]]; then
-            eco "No matching labels found. Must have one of: ${{ steps.current-labels.outputs.labels }}"
+            echo "No matching labels found. Must have one of: ${{ steps.current-labels.outputs.labels }}"
             exit 1
           fi
         env:
