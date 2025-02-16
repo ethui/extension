@@ -51,7 +51,7 @@
     "crx": "^5.0.1",
     "json-merge-patch": "^1.0.2",
     "json5": "^2.2.3",
-    "postcss": "^8.5.1",
+    "postcss": "^8.5.2",
     "ts-node": "^10.9.2",
     "ts-unused-exports": "^11.0.1",
     "tsx": "^4.19.2",
