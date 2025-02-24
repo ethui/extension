@@ -45,7 +45,7 @@
     "@types/node": "^22.13.5",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
-    "@types/webextension-polyfill": "^0.12.1",
+    "@types/webextension-polyfill": "^0.12.2",
     "@types/yargs": "^17.0.33",
     "autoprefixer": "^10.4.20",
     "crx": "^5.0.1",
