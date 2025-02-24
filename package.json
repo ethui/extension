@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@types/chrome": "^0.0.304",
+    "@types/chrome": "^0.0.306",
     "@types/json-merge-patch": "^1.0.0",
     "@types/node": "^22.13.4",
     "@types/react": "^19.0.10",
