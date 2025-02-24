@@ -42,7 +42,7 @@
     "@biomejs/biome": "^1.9.4",
     "@types/chrome": "^0.0.306",
     "@types/json-merge-patch": "^1.0.0",
-    "@types/node": "^22.13.4",
+    "@types/node": "^22.13.5",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@types/webextension-polyfill": "^0.12.1",
