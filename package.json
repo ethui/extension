@@ -25,7 +25,7 @@
     "@metamask/json-rpc-engine": "^10.0.3",
     "@metamask/json-rpc-middleware-stream": "^8.0.7",
     "@metamask/post-message-stream": "^9.0.0",
-    "@metamask/utils": "^11.3.0",
+    "@metamask/utils": "^11.4.0",
     "eth-json-rpc-filters": "^6.0.1",
     "eth-rpc-errors": "^4.0.3",
     "eventemitter3": "^5.0.1",
