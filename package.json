@@ -15,7 +15,7 @@
     "lint": "yarn lint:biome && yarn lint:tsc && yarn lint:unused",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
-    "lint:unused": "ts-unused-exports tsconfig.json --ignoreFiles=vite/.*.ts"
+    "lint:unused": "ts-unused-exports tsconfig.json --ignoreFiles='vite/.*.ts'"
   },
   "dependencies": {
     "@devtools-ds/object-inspector": "^1.2.1",

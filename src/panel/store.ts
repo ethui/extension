@@ -56,7 +56,7 @@ const store: StateCreator<Store> = (set, get) => ({
 
 export const useStore = create<Store>()(subscribeWithSelector(store));
 
-runtime.onMessage.addListener(async (_msg) => {
+runtime.onMessage.addListener(async (_msg: any) => {
   const msg: any = _msg as any;
   if (msg?.tabId !== tabId) return;
 
