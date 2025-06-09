@@ -711,10 +711,10 @@ __metadata:
     "@devtools-ds/object-inspector": "npm:^1.2.1"
     "@devtools-ds/table": "npm:^1.2.1"
     "@lukeed/uuid": "npm:^2.0.1"
-    "@metamask/eth-json-rpc-middleware": "npm:^16.0.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^17.0.1"
     "@metamask/json-rpc-engine": "npm:^10.0.3"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
-    "@metamask/post-message-stream": "npm:^9.0.0"
+    "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/utils": "npm:^11.4.0"
     "@types/chrome": "npm:^0.0.306"
     "@types/json-merge-patch": "npm:^1.0.0"
@@ -870,24 +870,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-block-tracker@npm:^11.0.4":
-  version: 11.0.4
-  resolution: "@metamask/eth-block-tracker@npm:11.0.4"
+"@metamask/eth-block-tracker@npm:^12.0.0":
+  version: 12.0.1
+  resolution: "@metamask/eth-block-tracker@npm:12.0.1"
   dependencies:
     "@metamask/eth-json-rpc-provider": "npm:^4.1.5"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/utils": "npm:^11.0.1"
     json-rpc-random-id: "npm:^1.0.1"
     pify: "npm:^5.0.0"
-  checksum: 10c0/d9b4faa4338f1427624e9b3834e32cbd9416231e656992b735203af57a236c1b1d643e42d1936beb1992ae577eb0ec52b2dbed0e1fe8df17001a7048f14089dd
+  checksum: 10c0/dce9e667c2b840a15068da3426f451eb898f1edbffd03a923c77c5430d6c80449c8d017ae78475ee36263d64eab4c9b3cfadfb9f4b80d2c01efcc12abaaf2d0f
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:16.0.0"
+"@metamask/eth-json-rpc-middleware@npm:^17.0.1":
+  version: 17.0.1
+  resolution: "@metamask/eth-json-rpc-middleware@npm:17.0.1"
   dependencies:
-    "@metamask/eth-block-tracker": "npm:^11.0.4"
+    "@metamask/eth-block-tracker": "npm:^12.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
     "@metamask/eth-sig-util": "npm:^8.1.2"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
@@ -899,7 +899,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10c0/4e04b132adb18e0edbecaf1b018eee8701a81603ba411fdbb2d9635013bd6dc927d14c3cdcda5f20110199602d0073523a775c6fb93fa57b4445b2722a094fb3
+  checksum: 10c0/e4e8cf770a446b6a69610d7c5e52bffe1ef8b43fd3b6395c7ba711c8478a9a88b93c37d192c8dd3e1f198b3c8604357bbdb8533af36a0fbc6ea6ab0776ace854
   languageName: node
   linkType: hard
 
@@ -954,13 +954,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/post-message-stream@npm:9.0.0"
+"@metamask/post-message-stream@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/post-message-stream@npm:10.0.0"
   dependencies:
-    "@metamask/utils": "npm:^11.0.1"
+    "@metamask/utils": "npm:^11.4.0"
     readable-stream: "npm:3.6.2"
-  checksum: 10c0/bf23dee320c97ac8e84c3741a3b2d08c7e716fa02c1249f02c41c9444c840ca600063f528283d809f3dddcf498998de5b9d6a7c63221a9b9bd447d4a1d9f498c
+  checksum: 10c0/bc9ae1b70d8989cc9f037870e67399e9ba43c800680a1cd417ac761ba9e3c0b56c275401307b4792493b22a7f83caef6af8800bc7f61c5bc7ff5029299c9dd6f
   languageName: node
   linkType: hard
 
