@@ -43,24 +43,39 @@ function initProviderForward() {
     target: `${name}:inpage`,
   }) as unknown as Duplex;
 
-  // bg stream
+  connectToBackground(name, inpageStream);
+}
+
+/**
+ * Connects to the background script and forwards messages from the page script to it
+ * Handles bg disconnections by recursing and reconnecting again, which can happen under Manifest v3, when browsers limit idle time for background scripts
+ */
+function connectToBackground(name: string, inpageStream: Duplex) {
   const bgPort = runtime.connect({ name: `${name}:contentscript` });
 
   window.onbeforeunload = () => {
     bgPort.disconnect();
   };
 
-  // inpage -> bg
-  inpageStream.on("data", (data) => {
+  const onPageData = (data: any) => {
     bgPort.postMessage(data);
-  });
-  // bg -> inpage
-  bgPort.onMessage.addListener((data) => {
+  };
+  const onBgData = (data: any) => {
     inpageStream.write(data);
-  });
-  bgPort.onDisconnect.addListener(() => {
-    log.warn(`[${name} - contentscript] disconnected`);
-  });
+  };
+
+  const onBgDisconnect = () => {
+    inpageStream.removeListener("data", onPageData);
+    bgPort.onMessage.removeListener(onBgData);
+    bgPort.onDisconnect.removeListener(onBgDisconnect);
+    log.warn(`[${name} - contentscript] disconnected. reconnecting`);
+
+    connectToBackground(name, inpageStream);
+  };
+
+  inpageStream.on("data", onPageData);
+  bgPort.onMessage.addListener(onBgData);
+  bgPort.onDisconnect.addListener(onBgDisconnect);
 }
 
 /**
