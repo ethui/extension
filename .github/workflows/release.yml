@@ -89,7 +89,7 @@ jobs:
           WEB_EXT_API_SECRET: ${{ secrets.MOZILLA_WEB_EXT_API_SECRET }}
 
   publish-release:
-    needs: [setup, extension, app]
+    needs: [setup]
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
