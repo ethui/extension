@@ -1,8 +1,8 @@
 import log from "loglevel";
-import { type Runtime, action, runtime } from "webextension-polyfill";
+import { action, type Runtime, runtime } from "webextension-polyfill";
 import { ArrayQueue, ConstantBackoff, WebsocketBuilder } from "websocket-ts";
 
-import { type Settings, defaultSettings, loadSettings } from "#/settings";
+import { defaultSettings, loadSettings, type Settings } from "#/settings";
 
 // init on load
 (async () => init())();
