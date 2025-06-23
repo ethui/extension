@@ -2,7 +2,6 @@ import type { Duplex } from "node:stream";
 
 import { v4 as uuidv4 } from "@lukeed/uuid";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
-import log from "loglevel";
 import { type EIP1193Provider, announceProvider } from "mipd";
 import { EthUIProvider } from "./provider";
 import { name } from "./utils";
@@ -40,7 +39,6 @@ function initializeProvider() {
 
   const provider = new EthUIProvider(connectionStream);
 
-  log.debug("provider", provider);
   setGlobalProvider(provider);
 
   announceProvider({
