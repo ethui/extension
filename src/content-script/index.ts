@@ -58,11 +58,9 @@ function connectToBackground(name: string, inpageStream: Duplex) {
   };
 
   const onPageData = (data: any) => {
-    log.log("onPageData");
     bgPort.postMessage(data);
   };
   const onBgData = (data: any) => {
-    log.log("onBgData");
     inpageStream.write(data);
   };
 
