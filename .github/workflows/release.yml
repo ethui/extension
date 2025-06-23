@@ -64,9 +64,9 @@ jobs:
           node-version: "22"
       - run: npm install -g yarn
 
-        run: yarn install
-        run: yarn build --target chrome -v ${{ needs.setup.outputs.version }}
-        run: yarn build --target firefox -v ${{ needs.setup.outputs.version }}
+      - run: yarn install
+      - run: yarn build --target chrome -v ${{ needs.setup.outputs.version }}
+      - run: yarn build --target firefox -v ${{ needs.setup.outputs.version }}
 
       - name: Upload to Draft Release
         run: gh release upload ${{ needs.setup.outputs.tag }} ./extension/dist/*.{crx,xpi}
