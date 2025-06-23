@@ -47,7 +47,7 @@ function initProviderForward() {
 }
 
 /**
- * Conects to the background script and forwards messages from the page script to it
+ * Connects to the background script and forwards messages from the page script to it
  * Handles bg disconnections by recursing and reconnecting again, which can happen under Manifest v3, when browsers limit idle time for background scripts
  */
 function connectToBackground(name: string, inpageStream: Duplex) {
