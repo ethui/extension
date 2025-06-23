@@ -63,6 +63,7 @@ async function notifyDevtools(
  * This behaviour prevents initiating connections for browser tabs where `window.ethereum` is not actually used
  */
 function setupProviderConnection(port: Runtime.Port) {
+  console.log("setupProviderConnection");
   const tab = port.sender!.tab!;
   const tabId = tab.id!;
   const url = tab.url;

@@ -40,7 +40,6 @@ function initializeProvider() {
 
   const provider = new EthUIProvider(connectionStream);
 
-  log.debug("provider", provider);
   setGlobalProvider(provider);
 
   announceProvider({
