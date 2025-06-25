@@ -69,12 +69,12 @@ jobs:
       - run: yarn build --target firefox -v ${{ needs.setup.outputs.version }}
 
       - name: Upload to Draft Release
-        run: gh release upload ${{ needs.setup.outputs.tag }} ./extension/dist/*.{crx,xpi}
+        run: gh release upload ${{ needs.setup.outputs.tag }} ./dist/*.{crx,xpi}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Submit to Google
-        run: npx chrome-webstore-upload-cli@3 upload --source ./extension/dist/chrome --auto-publish
+        run: npx chrome-webstore-upload-cli@3 upload --source ./dist/chrome --auto-publish
         continue-on-error: true
         env:
           EXTENSION_ID: ${{ secrets.GOOGLE_EXT_EXTENSION_ID }}
