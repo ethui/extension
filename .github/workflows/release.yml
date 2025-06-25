@@ -54,10 +54,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
-    needs: [setup]
+    needs: [setup, clear-assets]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: corepack enable yarn
       - uses: actions/setup-node@v4
         with:
           cache: "yarn"
@@ -89,7 +90,7 @@ jobs:
           WEB_EXT_API_SECRET: ${{ secrets.MOZILLA_WEB_EXT_API_SECRET }}
 
   publish-release:
-    needs: [setup]
+    needs: [setup, publish]
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
