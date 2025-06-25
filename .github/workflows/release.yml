@@ -63,9 +63,8 @@ jobs:
         with:
           cache: "yarn"
           node-version: "22"
-      - run: npm install -g yarn
 
-      - run: yarn install
+      - run: yarn install --immutable
       - run: yarn build --target chrome -v ${{ needs.setup.outputs.version }}
       - run: yarn build --target firefox -v ${{ needs.setup.outputs.version }}
 
