@@ -142,8 +142,6 @@ function connParams(port: Runtime.Port) {
 
   const params: Record<string, string | undefined> = {
     origin: (port.sender as unknown as { origin: string }).origin,
-    tabId: tab?.id?.toString(10),
-    favicon: tab?.favIconUrl,
     url: tab?.url,
     title: tab?.title,
   };
