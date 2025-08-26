@@ -73,7 +73,6 @@ async function generateManifest() {
   const targetManifest = JSON5.parse(
     await readFile(`./manifest/${target}.json`, { encoding: "utf8" }),
   );
-
   const manifest = jsonmergepatch.apply(baseManifest, targetManifest);
   manifest.version = version;
   await mkdir(dist, { recursive: true });

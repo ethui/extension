@@ -63,6 +63,7 @@ async function notifyDevtools(
  * This behaviour prevents initiating connections for browser tabs where `window.ethereum` is not actually used
  */
 function setupProviderConnection(port: Runtime.Port) {
+  log.debug("setupProviderConnection", port.name);
   const tab = port.sender!.tab!;
   const tabId = tab.id!;
   const url = tab.url;
@@ -89,9 +90,11 @@ function setupProviderConnection(port: Runtime.Port) {
     .withBackoff(new ConstantBackoff(1000))
     .onMessage((_ins, event) => {
       if (event.data === "ping") {
+        log.debug("WS ping");
         ws.send("pong");
         return;
       }
+      log.debug("WS message", event.data);
       // forward WS server messages back to the stream (content script)
       const resp = JSON.parse(event.data);
       port.postMessage(resp);
@@ -120,6 +123,7 @@ function setupProviderConnection(port: Runtime.Port) {
   });
 
   port.onDisconnect.addListener(() => {
+    log.debug("port disconnected");
     ws.close();
   });
 }
