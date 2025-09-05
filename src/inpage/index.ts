@@ -8,9 +8,9 @@ import { name } from "./utils";
 
 const { PROD } = import.meta.env;
 
-// @ts-ignore
+// @ts-expect-error
 import iconProd from "../public/icons/ethui-black.svg?base64";
-// @ts-ignore
+// @ts-expect-error
 import iconDev from "../public/icons/ethui-purple.svg?base64";
 
 const icon = PROD ? iconProd : iconDev;
