@@ -3,6 +3,7 @@ import { action, type Runtime, runtime } from "webextension-polyfill";
 import { ArrayQueue, ConstantBackoff, WebsocketBuilder } from "websocket-ts";
 
 import { defaultSettings, loadSettings, type Settings } from "#/settings";
+import { startHeartbeat } from "./heartbeat";
 
 // init on load
 (async () => init())();
@@ -13,6 +14,7 @@ let settings: Settings = defaultSettings;
  * Loads the current settings, and listens for incoming connections (from the injected contentscript)
  */
 async function init() {
+  startHeartbeat();
   settings = await loadSettings();
   log.setLevel(settings.logLevel);
 
