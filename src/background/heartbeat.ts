@@ -3,6 +3,8 @@
 import log from "loglevel";
 import { storage } from "webextension-polyfill";
 
+let heartbeatInterval: NodeJS.Timeout | undefined;
+
 /**
  * Starts the heartbeat interval which keeps the service worker alive. Call
  * this sparingly when you are doing work which requires persistence, and call
@@ -12,8 +14,15 @@ export async function startHeartbeat() {
   // Run the heartbeat once at service worker startup.
   runHeartbeat().then(() => {
     // Then again every 20 seconds.
-    setInterval(runHeartbeat, 20 * 1000);
+    heartbeatInterval = setInterval(runHeartbeat, 20000);
   });
+}
+
+export async function stopHeartbeat() {
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval);
+    heartbeatInterval = undefined;
+  }
 }
 
 async function runHeartbeat() {
