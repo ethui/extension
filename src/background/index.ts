@@ -28,7 +28,6 @@ async function init() {
       return;
     }
 
-    console.log(port);
     setupProviderConnection(port);
   });
 
