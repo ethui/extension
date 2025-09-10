@@ -17,7 +17,7 @@ export async function startHeartbeat() {
 }
 
 async function runHeartbeat() {
-  log.debug("Heartbeat", getLastHeartbeat());
+  log.debug("Heartbeat", await getLastHeartbeat());
   try {
     await storage.local.set({
       "last-heartbeat": Date.now().toString(),
