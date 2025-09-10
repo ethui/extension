@@ -84,12 +84,10 @@ function setupProviderConnection(port: Runtime.Port) {
   type Request = { id: number; method: string; params?: unknown };
   const reqs: Map<Request["id"], Request> = new Map();
 
-  // Queue to hold messages until WS connection is ready
-  const messageQueue: string[] = [];
-  let ws: ReturnType<typeof WebsocketBuilder.prototype.build> | null = null;
+  const queue: string[] = [];
+  let ws: ReturnType<typeof WebsocketBuilder.prototype.build> | undefined;
   let isConnecting = false;
 
-  // Function to create and initialize the WebSocket connection
   const initWebSocket = () => {
     if (ws || isConnecting) return;
 
@@ -101,15 +99,15 @@ function setupProviderConnection(port: Runtime.Port) {
         log.debug(`WS connection opened (${url})`);
         isConnecting = false;
 
-        // Send all queued messages
-        while (messageQueue.length > 0) {
-          const msg = messageQueue.shift()!;
+        // flush queue
+        while (queue.length > 0) {
+          const msg = queue.shift()!;
           ws!.send(msg);
         }
       })
       .onClose(() => {
         log.debug(`WS connection closed (${url})`);
-        ws = null;
+        ws = undefined;
         isConnecting = false;
       })
       .onReconnect(() => {
@@ -159,7 +157,7 @@ function setupProviderConnection(port: Runtime.Port) {
 
     // Queue message if WS is not ready, otherwise send directly
     if (!ws || isConnecting) {
-      messageQueue.push(msg);
+      queue.push(msg);
     } else {
       ws.send(msg);
     }
@@ -171,10 +169,9 @@ function setupProviderConnection(port: Runtime.Port) {
     log.debug("port disconnected");
     if (ws) {
       ws.close();
-      ws = null;
+      ws = undefined;
     }
-    // Clear the queue on disconnect
-    messageQueue.length = 0;
+    queue.length = 0;
   });
 }
 
