@@ -23,8 +23,8 @@ async function init() {
     if (!port.sender) {
       return;
     }
+
     if (port.sender.frameId !== 0) {
-      log.debug("ignoring framed port", port.sender);
       return;
     }
 
@@ -120,7 +120,7 @@ function setupProviderConnection(port: Runtime.Port) {
       .withBackoff(new ConstantBackoff(1000))
       .onMessage((_ins, event) => {
         if (event.data === "ping") {
-          log.debug("WS ping");
+          log.debug("[ws] ping");
           ws!.send("pong");
           return;
         }

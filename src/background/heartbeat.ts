@@ -17,7 +17,6 @@ export async function startHeartbeat() {
 }
 
 async function runHeartbeat() {
-  log.debug("Heartbeat", await getLastHeartbeat());
   try {
     await storage.local.set({
       "last-heartbeat": Date.now().toString(),
@@ -25,12 +24,4 @@ async function runHeartbeat() {
   } catch (err: any) {
     log.error("Heartbeat error", err);
   }
-}
-
-/**
- * Returns the last heartbeat stored in extension storage, or undefined if
- * the heartbeat has never run before.
- */
-async function getLastHeartbeat() {
-  return (await storage.local.get("last-heartbeat"))["last-heartbeat"];
 }
