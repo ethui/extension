@@ -83,7 +83,7 @@ function setupProviderConnection(port: Runtime.Port) {
   type Request = { id: number; method: string; params?: unknown };
   const reqs: Map<Request["id"], Request> = new Map();
 
-  const queue: string[] = [];
+  let queue: string[] = [];
   let ws: ReturnType<typeof WebsocketBuilder.prototype.build> | undefined;
   let isConnecting = false;
 
@@ -170,7 +170,7 @@ function setupProviderConnection(port: Runtime.Port) {
       ws.close();
       ws = undefined;
     }
-    queue.length = 0;
+    queue = [];
   });
 }
 
