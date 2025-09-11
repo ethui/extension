@@ -711,11 +711,11 @@ __metadata:
     "@devtools-ds/object-inspector": "npm:^1.2.1"
     "@devtools-ds/table": "npm:^1.2.1"
     "@lukeed/uuid": "npm:^2.0.1"
-    "@metamask/eth-json-rpc-middleware": "npm:^17.0.1"
+    "@metamask/eth-json-rpc-middleware": "npm:^18.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.3"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
     "@metamask/post-message-stream": "npm:^10.0.0"
-    "@metamask/utils": "npm:^11.4.0"
+    "@metamask/utils": "npm:^11.7.0"
     "@types/chrome": "npm:^0.1.0"
     "@types/json-merge-patch": "npm:^1.0.0"
     "@types/node": "npm:^22.14.0"
@@ -883,9 +883,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^17.0.1":
-  version: 17.0.1
-  resolution: "@metamask/eth-json-rpc-middleware@npm:17.0.1"
+"@metamask/eth-json-rpc-middleware@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:18.0.0"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^12.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
@@ -893,13 +893,13 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.7.0"
     "@types/bn.js": "npm:^5.1.5"
     bn.js: "npm:^5.2.1"
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10c0/e4e8cf770a446b6a69610d7c5e52bffe1ef8b43fd3b6395c7ba711c8478a9a88b93c37d192c8dd3e1f198b3c8604357bbdb8533af36a0fbc6ea6ab0776ace854
+  checksum: 10c0/4febecae66a0d9011d5d7d38b6195bf8c75ab360351ec5ac840d0a17391033d081d2a863f24d5a59bd60350e9ff55db3102d5e23749f19c1327514ca17b99d65
   languageName: node
   linkType: hard
 
@@ -1009,6 +1009,25 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10c0/ecd3e26bac4cf338fdae53c4fe9cd6403d4b4c0384733751d28a34af25545669e1ff03fd66c36e6cc6e7cfe237215bfa12b0e92afcb81cfe0cf942aebf6b25bd
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^11.7.0":
+  version: 11.7.0
+  resolution: "@metamask/utils@npm:11.7.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    "@types/lodash": "npm:^4.17.20"
+    debug: "npm:^4.3.4"
+    lodash: "npm:^4.17.21"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    uuid: "npm:^9.0.1"
+  checksum: 10c0/5ea8d700714f953ff62332053f899473f68b2398b1f8a3b396687034041d1b2eee7400906684dfaa8b70f02a8303aa1c8380a95405042e08f6be2f89795713d0
   languageName: node
   linkType: hard
 
@@ -1436,6 +1455,13 @@ __metadata:
   version: 0.0.29
   resolution: "@types/json5@npm:0.0.29"
   checksum: 10c0/6bf5337bc447b706bb5b4431d37686aa2ea6d07cfd6f79cc31de80170d6ff9b1c7384a9c0ccbc45b3f512bae9e9f75c2e12109806a15331dc94e8a8db6dbb4ac
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.17.20":
+  version: 4.17.20
+  resolution: "@types/lodash@npm:4.17.20"
+  checksum: 10c0/98cdd0faae22cbb8079a01a3bb65aa8f8c41143367486c1cbf5adc83f16c9272a2a5d2c1f541f61d0d73da543c16ee1d21cf2ef86cb93cd0cc0ac3bced6dd88f
   languageName: node
   linkType: hard
 
@@ -4557,7 +4583,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.14":
+"lodash@npm:^4.17.14, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
