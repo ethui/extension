@@ -20,6 +20,14 @@ async function init() {
 
   // handle each incoming content script connection
   runtime.onConnect.addListener((port: Runtime.Port) => {
+    if (!port.sender) {
+      return;
+    }
+
+    if (port.sender.frameId !== 0) {
+      return;
+    }
+
     setupProviderConnection(port);
   });
 
@@ -75,41 +83,62 @@ function setupProviderConnection(port: Runtime.Port) {
   type Request = { id: number; method: string; params?: unknown };
   const reqs: Map<Request["id"], Request> = new Map();
 
-  const ws = new WebsocketBuilder(endpoint(port))
-    .onOpen(() => {
-      log.debug(`WS connection opened (${url})`);
-    })
-    .onClose(() => {
-      log.debug(`WS connection closed (${url})`);
-    })
-    .onReconnect(() => {
-      log.debug("WS connection reconnected");
-    })
-    .onError((e) => {
-      log.error("[WS] error:", e);
-    })
-    .withBuffer(new ArrayQueue())
-    .withBackoff(new ConstantBackoff(1000))
-    .onMessage((_ins, event) => {
-      if (event.data === "ping") {
-        log.debug("WS ping");
-        ws.send("pong");
-        return;
-      }
-      log.debug("WS message", event.data);
-      // forward WS server messages back to the stream (content script)
-      const resp = JSON.parse(event.data);
-      port.postMessage(resp);
+  let queue: string[] = [];
+  let ws: ReturnType<typeof WebsocketBuilder.prototype.build> | undefined;
+  let isConnecting = false;
 
-      const req = reqs.get(resp.id);
-      const logRequest = req?.params
-        ? [req?.method, req?.params]
-        : [req?.method];
-      const fn = resp.error ? log.error : log.debug;
-      fn(...logRequest, resp.error || resp.result);
-      notifyDevtools(tabId, "response", resp);
-    })
-    .build();
+  const initWebSocket = () => {
+    if (ws || isConnecting) return;
+
+    isConnecting = true;
+    log.debug(`Initializing WS connection for ${url}`);
+
+    ws = new WebsocketBuilder(endpoint(port))
+      .onOpen(() => {
+        log.debug(`WS connection opened (${url})`);
+        isConnecting = false;
+
+        // flush queue
+        while (queue.length > 0) {
+          const msg = queue.shift()!;
+          ws!.send(msg);
+        }
+      })
+      .onClose(() => {
+        log.debug(`WS connection closed (${url})`);
+        ws = undefined;
+        isConnecting = false;
+      })
+      .onReconnect(() => {
+        log.debug("WS connection reconnected");
+      })
+      .onError((e) => {
+        log.error("[WS] error:", e);
+        isConnecting = false;
+      })
+      .withBuffer(new ArrayQueue())
+      .withBackoff(new ConstantBackoff(1000))
+      .onMessage((_ins, event) => {
+        if (event.data === "ping") {
+          log.debug("[ws] ping");
+          ws!.send("pong");
+          return;
+        }
+        log.debug("WS message", event.data);
+        // forward WS server messages back to the stream (content script)
+        const resp = JSON.parse(event.data);
+        port.postMessage(resp);
+
+        const req = reqs.get(resp.id);
+        const logRequest = req?.params
+          ? [req?.method, req?.params]
+          : [req?.method];
+        const fn = resp.error ? log.error : log.debug;
+        fn(...logRequest, resp.error || resp.result);
+        notifyDevtools(tabId, "response", resp);
+      })
+      .build();
+  };
 
   // forwarding incoming stream data to the WS server
   port.onMessage.addListener((data) => {
@@ -119,14 +148,29 @@ function setupProviderConnection(port: Runtime.Port) {
     }
 
     const msg = JSON.stringify(data);
-    ws.send(msg);
+
+    // Initialize WebSocket on first message if not already done
+    if (!ws && !isConnecting) {
+      initWebSocket();
+    }
+
+    // Queue message if WS is not ready, otherwise send directly
+    if (!ws || isConnecting) {
+      queue.push(msg);
+    } else {
+      ws.send(msg);
+    }
 
     notifyDevtools(tabId, "request", data);
   });
 
   port.onDisconnect.addListener(() => {
     log.debug("port disconnected");
-    ws.close();
+    if (ws) {
+      ws.close();
+      ws = undefined;
+    }
+    queue = [];
   });
 }
 
