@@ -4,7 +4,6 @@ import {
   JsonRpcEngine,
 } from "@metamask/json-rpc-engine";
 import { createStreamMiddleware } from "@metamask/json-rpc-middleware-stream";
-import type { Json, JsonRpcResponse } from "@metamask/utils";
 import { EthereumRpcError } from "eth-rpc-errors";
 import { EventEmitter } from "eventemitter3";
 import log from "loglevel";
@@ -53,7 +52,7 @@ export class EthUIProvider extends EventEmitter {
     log.debug("request", { method, params });
     this.initialize();
 
-    const resp: JsonRpcResponse<Json> = await this.engine.handle({
+    const resp = await this.engine.handle({
       method,
       params,
       id: this.nextId(),
