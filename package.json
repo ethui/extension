@@ -57,7 +57,7 @@
     "ts-unused-exports": "^11.0.1",
     "tsx": "^4.21.0",
     "typescript": "5.9.2",
-    "vite": "^7.2.2",
+    "vite": "^7.3.0",
     "vite-plugin-node-polyfills": "^0.24.0",
     "vite-tsconfig-paths": "^6.0.3",
     "web-ext": "^9.2.0",
