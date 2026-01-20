@@ -771,7 +771,7 @@ __metadata:
     "@devtools-ds/object-inspector": "npm:^1.2.1"
     "@devtools-ds/table": "npm:^1.2.1"
     "@lukeed/uuid": "npm:^2.0.1"
-    "@metamask/eth-json-rpc-middleware": "npm:^22.0.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^23.0.0"
     "@metamask/json-rpc-engine": "npm:^10.2.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/post-message-stream": "npm:^10.0.0"
@@ -980,9 +980,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^22.0.0":
-  version: 22.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:22.0.0"
+"@metamask/eth-json-rpc-middleware@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:23.0.0"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^15.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
@@ -991,11 +991,11 @@ __metadata:
     "@metamask/message-manager": "npm:^14.1.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.8.1"
+    "@metamask/utils": "npm:^11.9.0"
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10c0/037b1f39b6df5ff8c13ea5b587b460d9bac0e6e8d48d82247877b7c013fac80cd3782c4cc9ea8975e753dc77b8ad26d52fed7d297582fa5d7b221af28a7f11d5
+  checksum: 10c0/6562e103b550415c6161cc5a2008cebe45a004cf6ce9de8a9f206e5c40b65bdb6b0b61c41d6f2a2021959db29a2a824a69eb8248b56ff64862f93e75e4a5aff7
   languageName: node
   linkType: hard
 
