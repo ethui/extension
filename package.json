@@ -21,6 +21,8 @@
   "dependencies": {
     "@devtools-ds/object-inspector": "^1.2.1",
     "@devtools-ds/table": "^1.2.1",
+    "@ethui/ui": "^0.0.141",
+    "@fontsource/source-code-pro": "^5.2.5",
     "@lukeed/uuid": "^2.0.1",
     "@metamask/eth-json-rpc-middleware": "^22.0.0",
     "@metamask/json-rpc-engine": "^10.2.0",
@@ -35,12 +37,14 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "stream": "^0.0.3",
+    "tailwindcss": "^4.1.5",
     "webextension-polyfill": "^0.12.0",
     "websocket-ts": "^2.2.1",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.1",
+    "@tailwindcss/vite": "^4.1.5",
     "@types/chrome": "^0.1.0",
     "@types/json-merge-patch": "^1.0.0",
     "@types/node": "^22.14.0",

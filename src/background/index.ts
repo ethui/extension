@@ -1,8 +1,9 @@
 import log from "loglevel";
-import { action, type Runtime, runtime } from "webextension-polyfill";
+import { type Runtime, runtime } from "webextension-polyfill";
 import { ArrayQueue, ConstantBackoff, WebsocketBuilder } from "websocket-ts";
 
 import { defaultSettings, loadSettings, type Settings } from "#/settings";
+import { setConnectionState, setupConnectionStateListener } from "./connectionState";
 import { startHeartbeat } from "./heartbeat";
 
 // init on load
@@ -18,6 +19,8 @@ async function init() {
   settings = await loadSettings();
   log.setLevel(settings.logLevel);
 
+  setupConnectionStateListener();
+
   // handle each incoming content script connection
   runtime.onConnect.addListener((port: Runtime.Port) => {
     if (!port.sender) {
@@ -29,10 +32,6 @@ async function init() {
     }
 
     setupProviderConnection(port);
-  });
-
-  action.onClicked.addListener(() => {
-    console.log("icon clicked");
   });
 }
 
@@ -97,6 +96,7 @@ function setupProviderConnection(port: Runtime.Port) {
       .onOpen(() => {
         log.debug(`WS connection opened (${url})`);
         isConnecting = false;
+        setConnectionState("connected");
 
         // flush queue
         while (queue.length > 0) {
@@ -108,13 +108,16 @@ function setupProviderConnection(port: Runtime.Port) {
         log.debug(`WS connection closed (${url})`);
         ws = undefined;
         isConnecting = false;
+        setConnectionState("disconnected");
       })
       .onReconnect(() => {
         log.debug("WS connection reconnected");
+        setConnectionState("connected");
       })
       .onError((e) => {
         log.error("[WS] error:", e);
         isConnecting = false;
+        setConnectionState("disconnected");
       })
       .withBuffer(new ArrayQueue())
       .withBackoff(new ConstantBackoff(1000))
