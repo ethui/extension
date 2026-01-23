@@ -3,6 +3,7 @@ import { cn } from "@ethui/ui/lib/utils";
 import { Copy, Check } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
+import * as chains from "viem/chains";
 import { runtime } from "webextension-polyfill";
 
 import "./styles.css";
@@ -15,18 +16,16 @@ interface WalletInfo {
   balance: string;
 }
 
-// Common chain IDs to names
-const CHAIN_NAMES: Record<string, string> = {
-  "0x1": "Ethereum",
-  "0x5": "Goerli",
-  "0xaa36a7": "Sepolia",
-  "0x89": "Polygon",
-  "0xa": "Optimism",
-  "0xa4b1": "Arbitrum",
-  "0x2105": "Base",
-  "0x7a69": "Anvil",
-  "0x539": "Localhost",
-};
+// Build a map of chain ID to name from viem's chains
+const CHAIN_NAMES: Record<number, string> = Object.values(chains).reduce(
+  (acc, chain) => {
+    if (typeof chain === "object" && "id" in chain && "name" in chain) {
+      acc[chain.id] = chain.name;
+    }
+    return acc;
+  },
+  {} as Record<number, string>,
+);
 
 function truncateAddress(address: string): string {
   if (!address || address.length < 10) return address;
@@ -46,7 +45,8 @@ function formatBalance(balanceHex: string): string {
 }
 
 function getChainName(chainId: string): string {
-  return CHAIN_NAMES[chainId.toLowerCase()] || `Chain ${parseInt(chainId, 16)}`;
+  const id = parseInt(chainId, 16);
+  return CHAIN_NAMES[id] || `Chain ${id}`;
 }
 
 function App() {

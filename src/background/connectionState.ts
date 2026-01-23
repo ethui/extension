@@ -68,7 +68,7 @@ function showDisconnectedNotification() {
 
   chrome.notifications.create(NOTIFICATION_ID, {
     type: "basic",
-    iconUrl: chrome.runtime.getURL("icons/ethui-purple-128.png"),
+    iconUrl: chrome.runtime.getURL("icons/ethui-black-128.png"),
     title: "ethui Desktop Not Running",
     message:
       "The ethui desktop app doesn't appear to be running. Click the extension icon for more info.",
