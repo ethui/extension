@@ -75,6 +75,34 @@ function showDisconnectedNotification() {
   });
 }
 
+async function checkConnection(): Promise<ConnectionState> {
+  const settings = await loadSettings();
+  const endpoint = settings.endpoint;
+
+  return new Promise((resolve) => {
+    const ws = new WebSocket(endpoint);
+    const timeout = setTimeout(() => {
+      ws.close();
+      setConnectionState("disconnected");
+      resolve("disconnected");
+    }, 3000);
+
+    ws.onopen = () => {
+      clearTimeout(timeout);
+      ws.close();
+      setConnectionState("connected");
+      resolve("connected");
+    };
+
+    ws.onerror = () => {
+      clearTimeout(timeout);
+      ws.close();
+      setConnectionState("disconnected");
+      resolve("disconnected");
+    };
+  });
+}
+
 async function fetchWalletInfo(): Promise<WalletInfo | null> {
   const settings = await loadSettings();
   const endpoint = settings.endpoint;
@@ -161,6 +189,13 @@ export function setupConnectionStateListener() {
     const msg = message as { type: string };
 
     if (msg.type === "get-connection-state") {
+      // If state is unknown, check connection before responding
+      if (globalConnectionState === "unknown") {
+        return checkConnection().then((state) => ({
+          type: "connection-state",
+          state,
+        }));
+      }
       return Promise.resolve({
         type: "connection-state",
         state: globalConnectionState,

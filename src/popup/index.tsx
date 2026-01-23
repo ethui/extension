@@ -178,16 +178,20 @@ function App() {
             : "text-muted-foreground",
         )}
       >
-        {connectionState === "disconnected" ? "Not Connected" : "Loading..."}
+        {connectionState === "disconnected" ? "Not Connected" : "Checking..."}
       </div>
-      <p className="mb-4 text-muted-foreground text-sm">
-        The ethui desktop app doesn't appear to be running.
-      </p>
-      <Button asChild>
-        <a href="https://ethui.dev" target="_blank" rel="noopener noreferrer">
-          Get ethui Desktop
-        </a>
-      </Button>
+      {connectionState === "disconnected" && (
+        <>
+          <p className="mb-4 text-muted-foreground text-sm">
+            The ethui desktop app doesn't appear to be running.
+          </p>
+          <Button asChild>
+            <a href="https://ethui.dev" target="_blank" rel="noopener noreferrer">
+              Get ethui Desktop
+            </a>
+          </Button>
+        </>
+      )}
     </div>
   );
 }
