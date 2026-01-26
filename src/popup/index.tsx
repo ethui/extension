@@ -100,16 +100,16 @@ function App() {
     }
   }, [connectionState]);
 
-  // Poll for connection when disconnected
+  // Poll for connection changes
   useEffect(() => {
-    if (connectionState !== "disconnected") return;
+    if (connectionState === "unknown") return;
 
     const interval = setInterval(() => {
       runtime
         .sendMessage({ type: "check-connection" })
         .then((response: unknown) => {
           const msg = response as { state?: ConnectionState };
-          if (msg?.state && msg.state !== "disconnected") {
+          if (msg?.state && msg.state !== connectionState) {
             setConnectionState(msg.state);
           }
         })
