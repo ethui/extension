@@ -117,7 +117,10 @@ function App() {
     return (
       <div className="p-4">
         <div className="mb-3 flex items-center justify-between">
-          <span className="font-medium text-green-500 text-sm">Connected</span>
+          <div className="flex items-center gap-2">
+            <img src="/icons/ethui-black.svg" alt="ethui" className="h-5 w-5" />
+            <span className="font-medium text-green-500 text-sm">Connected</span>
+          </div>
           {chainId && (
             <span className="rounded bg-secondary px-2 py-0.5 text-secondary-foreground text-xs">
               {getChainName(chainId)}
@@ -169,19 +172,22 @@ function App() {
   }
 
   return (
-    <div className="p-5 text-center">
-      <div
-        className={cn(
-          "mb-2 font-bold text-lg",
-          connectionState === "disconnected"
-            ? "text-destructive"
-            : "text-muted-foreground",
-        )}
-      >
-        {connectionState === "disconnected" ? "Not Connected" : "Checking..."}
+    <div className="p-5">
+      <div className="mb-4 flex items-center gap-2">
+        <img src="/icons/ethui-black.svg" alt="ethui" className="h-5 w-5" />
+        <span
+          className={cn(
+            "font-bold text-lg",
+            connectionState === "disconnected"
+              ? "text-destructive"
+              : "text-muted-foreground",
+          )}
+        >
+          {connectionState === "disconnected" ? "Not Connected" : "Checking..."}
+        </span>
       </div>
       {connectionState === "disconnected" && (
-        <>
+        <div className="text-center">
           <p className="mb-4 text-muted-foreground text-sm">
             The ethui desktop app doesn't appear to be running.
           </p>
@@ -190,7 +196,7 @@ function App() {
               Get ethui Desktop
             </a>
           </Button>
-        </>
+        </div>
       )}
     </div>
   );
