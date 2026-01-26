@@ -1,5 +1,9 @@
+import {
+  Alert,
+  AlertDescription,
+} from "@ethui/ui/components/shadcn/alert";
 import { Button } from "@ethui/ui/components/shadcn/button";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, CircleX } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import * as chains from "viem/chains";
@@ -198,10 +202,13 @@ function App() {
         </span>
       </div>
       {connectionState === "disconnected" && (
-        <div>
-          <p className="mb-3 text-muted-foreground text-sm">
-            The ethui desktop app doesn't appear to be running.
-          </p>
+        <div className="space-y-3">
+          <Alert variant="destructive">
+            <CircleX className="h-4 w-4" />
+            <AlertDescription>
+              The ethui desktop app doesn't appear to be running.
+            </AlertDescription>
+          </Alert>
           <Button asChild size="sm">
             <a href="https://ethui.dev" target="_blank" rel="noopener noreferrer">
               Get ethui Desktop
