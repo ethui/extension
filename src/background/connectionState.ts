@@ -80,25 +80,33 @@ async function checkConnection(): Promise<ConnectionState> {
   const endpoint = settings.endpoint;
 
   return new Promise((resolve) => {
+    let resolved = false;
+    const done = (state: ConnectionState) => {
+      if (resolved) return;
+      resolved = true;
+      clearTimeout(timeout);
+      setConnectionState(state);
+      resolve(state);
+    };
+
     const ws = new WebSocket(endpoint);
     const timeout = setTimeout(() => {
       ws.close();
-      setConnectionState("disconnected");
-      resolve("disconnected");
+      done("disconnected");
     }, 3000);
 
     ws.onopen = () => {
-      clearTimeout(timeout);
       ws.close();
-      setConnectionState("connected");
-      resolve("connected");
+      done("connected");
     };
 
     ws.onerror = () => {
-      clearTimeout(timeout);
       ws.close();
-      setConnectionState("disconnected");
-      resolve("disconnected");
+      done("disconnected");
+    };
+
+    ws.onclose = () => {
+      done("disconnected");
     };
   });
 }
