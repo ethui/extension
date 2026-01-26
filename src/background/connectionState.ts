@@ -216,6 +216,13 @@ export function setupConnectionStateListener() {
         info,
       }));
     }
+
+    if (msg.type === "check-connection") {
+      return checkConnection().then((state) => ({
+        type: "connection-state",
+        state,
+      }));
+    }
   });
 
   // Handle notification click - open ethui.dev

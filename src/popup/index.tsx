@@ -100,6 +100,25 @@ function App() {
     }
   }, [connectionState]);
 
+  // Poll for connection when disconnected
+  useEffect(() => {
+    if (connectionState !== "disconnected") return;
+
+    const interval = setInterval(() => {
+      runtime
+        .sendMessage({ type: "check-connection" })
+        .then((response: unknown) => {
+          const msg = response as { state?: ConnectionState };
+          if (msg?.state && msg.state !== "disconnected") {
+            setConnectionState(msg.state);
+          }
+        })
+        .catch(() => {});
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [connectionState]);
+
   const copyAddress = async () => {
     if (walletInfo?.accounts[0]) {
       await navigator.clipboard.writeText(walletInfo.accounts[0]);
