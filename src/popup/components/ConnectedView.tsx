@@ -2,16 +2,12 @@ import { Button } from "@ethui/ui/components/shadcn/button";
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 
-import type { WalletInfo } from "../hooks/useWalletInfo";
+import { useWalletInfo } from "../hooks/useWalletInfo";
 import { formatBalance, getChainName, truncateAddress } from "../utils";
 import { Header } from "./Header";
 
-interface ConnectedViewProps {
-  walletInfo: WalletInfo | null;
-  loading: boolean;
-}
-
-export function ConnectedView({ walletInfo, loading }: ConnectedViewProps) {
+export function ConnectedView() {
+  const { walletInfo, loading } = useWalletInfo();
   const [copied, setCopied] = useState(false);
 
   const address = walletInfo?.accounts[0];
