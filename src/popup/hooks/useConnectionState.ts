@@ -32,8 +32,12 @@ export function useConnectionState() {
   }, []);
 
   // Poll for connection changes
+  // Poll frequently when disconnected (to detect app startup quickly),
+  // but slowly when connected (disconnection is detected immediately via WebSocket onClose)
   useEffect(() => {
     if (connectionState === "unknown") return;
+
+    const pollInterval = connectionState === "disconnected" ? 3000 : 15000;
 
     const interval = setInterval(() => {
       runtime
@@ -45,7 +49,7 @@ export function useConnectionState() {
           }
         })
         .catch(() => {});
-    }, 2000);
+    }, pollInterval);
 
     return () => clearInterval(interval);
   }, [connectionState]);

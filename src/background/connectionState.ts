@@ -55,7 +55,7 @@ function updateBadge() {
   if (globalConnectionState === "disconnected") {
     action.setBadgeText({ text: "!" });
     action.setBadgeBackgroundColor({ color: "#ef4444" });
-  } else if (globalConnectionState === "connected") {
+  } else {
     action.setBadgeText({ text: "" });
   }
 }
@@ -188,45 +188,48 @@ async function fetchWalletInfo(): Promise<WalletInfo | null> {
 }
 
 export function setupConnectionStateListener() {
-  runtime.onMessage.addListener((message: unknown) => {
-    if (
-      typeof message !== "object" ||
-      message === null ||
-      !("type" in message)
-    ) {
-      return;
-    }
-
-    const msg = message as { type: string };
-
-    if (msg.type === "get-connection-state") {
-      // If state is unknown, check connection before responding
-      if (globalConnectionState === "unknown") {
-        return checkConnection().then((state) => ({
-          type: "connection-state",
-          state,
-        }));
+  runtime.onMessage.addListener(
+    (message: unknown, _sender: unknown, sendResponse: (r: unknown) => void) => {
+      if (
+        typeof message !== "object" ||
+        message === null ||
+        !("type" in message)
+      ) {
+        return;
       }
-      return Promise.resolve({
-        type: "connection-state",
-        state: globalConnectionState,
-      });
-    }
 
-    if (msg.type === "get-wallet-info") {
-      return fetchWalletInfo().then((info) => ({
-        type: "wallet-info",
-        info,
-      }));
-    }
+      const msg = message as { type: string };
 
-    if (msg.type === "check-connection") {
-      return checkConnection().then((state) => ({
-        type: "connection-state",
-        state,
-      }));
+      if (msg.type === "get-connection-state") {
+        // If state is unknown, check connection before responding
+        if (globalConnectionState === "unknown") {
+          checkConnection().then((state) => {
+            sendResponse({ type: "connection-state", state });
+          });
+        } else {
+          sendResponse({
+            type: "connection-state",
+            state: globalConnectionState,
+          });
+        }
+        return true;
+      }
+
+      if (msg.type === "get-wallet-info") {
+        fetchWalletInfo().then((info) => {
+          sendResponse({ type: "wallet-info", info });
+        });
+        return true;
+      }
+
+      if (msg.type === "check-connection") {
+        checkConnection().then((state) => {
+          sendResponse({ type: "connection-state", state });
+        });
+        return true;
+      }
     }
-  });
+  );
 
   // Handle notification click - open ethui.dev
   notifications.onClicked.addListener((notificationId) => {
