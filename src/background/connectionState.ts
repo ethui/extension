@@ -113,17 +113,29 @@ async function fetchWalletInfo(): Promise<WalletInfo | null> {
   return new Promise((resolve) => {
     const ws = new WebSocket(endpoint);
     let requestId = 1;
-    const pending = new Map<number, (result: unknown) => void>();
+    const pending = new Map<
+      number,
+      { resolve: (result: unknown) => void; reject: (err: Error) => void }
+    >();
+
+    const rejectAllPending = (reason: string) => {
+      const error = new Error(reason);
+      for (const { reject } of pending.values()) {
+        reject(error);
+      }
+      pending.clear();
+    };
 
     const sendRequest = (method: string, params: unknown[] = []) => {
       const id = requestId++;
-      return new Promise<unknown>((res) => {
-        pending.set(id, res);
+      return new Promise<unknown>((res, rej) => {
+        pending.set(id, { resolve: res, reject: rej });
         ws.send(JSON.stringify({ jsonrpc: "2.0", id, method, params }));
       });
     };
 
     const timeout = setTimeout(() => {
+      rejectAllPending("Request timed out");
       ws.close();
       resolve(null);
     }, 5000);
@@ -163,9 +175,9 @@ async function fetchWalletInfo(): Promise<WalletInfo | null> {
       try {
         const data = JSON.parse(event.data);
         if (data.id && pending.has(data.id)) {
-          const callback = pending.get(data.id)!;
+          const { resolve: res } = pending.get(data.id)!;
           pending.delete(data.id);
-          callback(data.result);
+          res(data.result);
         }
       } catch {
         // Ignore parse errors
@@ -174,11 +186,13 @@ async function fetchWalletInfo(): Promise<WalletInfo | null> {
 
     ws.onerror = () => {
       clearTimeout(timeout);
+      rejectAllPending("WebSocket error");
       resolve(null);
     };
 
     ws.onclose = () => {
       clearTimeout(timeout);
+      rejectAllPending("WebSocket closed");
     };
   });
 }
