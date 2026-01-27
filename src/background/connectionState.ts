@@ -1,6 +1,6 @@
 import { action, notifications, runtime, tabs } from "webextension-polyfill";
 
-import { loadSettings } from "#/settings";
+import { getEndpoint, loadSettings } from "#/settings";
 
 type ConnectionState = "connected" | "disconnected" | "unknown";
 
@@ -14,6 +14,22 @@ let globalConnectionState: ConnectionState = "unknown";
 let hasShownNotification = false;
 
 const NOTIFICATION_ID = "ethui-connection-status";
+
+export function resetConnectionState() {
+  globalConnectionState = "unknown";
+  hasShownNotification = false;
+  updateBadge();
+
+  // Notify popup to re-check connection
+  runtime
+    .sendMessage({
+      type: "connection-state",
+      state: "unknown",
+    })
+    .catch(() => {
+      // Popup may not be open, ignore error
+    });
+}
 
 export function setConnectionState(state: ConnectionState) {
   const previousState = globalConnectionState;
@@ -72,7 +88,7 @@ function showDisconnectedNotification() {
 
 async function checkConnection(): Promise<ConnectionState> {
   const settings = await loadSettings();
-  const endpoint = settings.endpoint;
+  const endpoint = getEndpoint(settings);
 
   return new Promise((resolve) => {
     let resolved = false;
@@ -108,7 +124,7 @@ async function checkConnection(): Promise<ConnectionState> {
 
 async function fetchWalletInfo(): Promise<WalletInfo | null> {
   const settings = await loadSettings();
-  const endpoint = settings.endpoint;
+  const endpoint = getEndpoint(settings);
 
   return new Promise((resolve) => {
     const ws = new WebSocket(endpoint);

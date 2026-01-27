@@ -3,7 +3,7 @@ import { storage } from "webextension-polyfill";
 import { defaultSettings, type Settings } from "#/settings";
 
 const $logLevel = document.getElementById("log-level") as HTMLInputElement;
-const $endpoint = document.getElementById("endpoint") as HTMLInputElement;
+const $devMode = document.getElementById("dev-mode") as HTMLInputElement;
 const $status = document.getElementById("status") as HTMLDivElement;
 const $save = document.getElementById("save") as HTMLButtonElement;
 
@@ -12,12 +12,12 @@ const saveOptions = () => {
   const options: Settings = {
     logLevel:
       ($logLevel.value as Settings["logLevel"]) || defaultSettings.logLevel,
-    endpoint: $endpoint.value || defaultSettings.endpoint,
+    devMode: $devMode.checked,
   };
 
-  storage.sync.set(options).then(() => {
+  storage.sync.set(options as Record<string, unknown>).then(() => {
     // Update status to let user know options were saved.
-    $status.textContent = "Options saved. Restart browser to take effect";
+    $status.textContent = "Options saved";
     setTimeout(() => {
       $status.textContent = "";
     }, 750);
@@ -27,9 +27,9 @@ const saveOptions = () => {
 // Restores select box and checkbox state using the preferences
 // stored in chrome.storage.
 const restoreOptions = () => {
-  storage.sync.get(defaultSettings).then((items) => {
+  storage.sync.get(defaultSettings as Record<string, unknown>).then((items) => {
     $logLevel.value = items.logLevel as string;
-    $endpoint.value = items.endpoint as string;
+    $devMode.checked = items.devMode as boolean;
   });
 };
 
