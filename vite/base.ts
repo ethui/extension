@@ -1,4 +1,6 @@
 import path from "node:path";
+// @ts-expect-error - module resolution issue with .mts types
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -25,6 +27,7 @@ export default defineConfig({
       exclude: ["fs"],
     }),
     tsconfigPaths({ parseNative: true }),
+    tailwindcss(),
   ],
   build: {
     minify: false,
@@ -38,6 +41,7 @@ export default defineConfig({
         devtools: new URL("../src/devtools/index.html", import.meta.url)
           .pathname,
         panel: new URL("../src/panel/index.html", import.meta.url).pathname,
+        popup: new URL("../src/popup/index.html", import.meta.url).pathname,
       },
       output: {
         entryFileNames: (chunk) =>
