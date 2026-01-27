@@ -1,5 +1,4 @@
-/// <reference types="chrome" />
-import { action, runtime } from "webextension-polyfill";
+import { action, notifications, runtime, tabs } from "webextension-polyfill";
 
 import { loadSettings } from "#/settings";
 
@@ -62,13 +61,13 @@ function updateBadge() {
 }
 
 function showDisconnectedNotification() {
-  if (!chrome.notifications?.create) {
+  if (!notifications?.create) {
     return;
   }
 
-  chrome.notifications.create(NOTIFICATION_ID, {
+  notifications.create(NOTIFICATION_ID, {
     type: "basic",
-    iconUrl: chrome.runtime.getURL("icons/ethui-black-128.png"),
+    iconUrl: runtime.getURL("icons/ethui-black-128.png"),
     title: "ethui Desktop Not Running",
     message:
       "The ethui desktop app doesn't appear to be running. Click the extension icon for more info.",
@@ -190,7 +189,11 @@ async function fetchWalletInfo(): Promise<WalletInfo | null> {
 
 export function setupConnectionStateListener() {
   runtime.onMessage.addListener((message: unknown) => {
-    if (typeof message !== "object" || message === null || !("type" in message)) {
+    if (
+      typeof message !== "object" ||
+      message === null ||
+      !("type" in message)
+    ) {
       return;
     }
 
@@ -226,9 +229,9 @@ export function setupConnectionStateListener() {
   });
 
   // Handle notification click - open ethui.dev
-  chrome.notifications.onClicked.addListener((notificationId) => {
+  notifications.onClicked.addListener((notificationId) => {
     if (notificationId === NOTIFICATION_ID) {
-      chrome.tabs.create({ url: "https://ethui.dev" });
+      tabs.create({ url: "https://ethui.dev" });
     }
   });
 }
