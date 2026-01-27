@@ -91,8 +91,8 @@ async function checkConnection(): Promise<ConnectionState> {
     }, 3000);
 
     ws.onopen = () => {
-      ws.close();
       done("connected");
+      ws.close();
     };
 
     ws.onerror = () => {
