@@ -155,45 +155,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chevrotain/cst-dts-gen@npm:11.1.0":
-  version: 11.1.0
-  resolution: "@chevrotain/cst-dts-gen@npm:11.1.0"
+"@chevrotain/cst-dts-gen@npm:11.1.1":
+  version: 11.1.1
+  resolution: "@chevrotain/cst-dts-gen@npm:11.1.1"
   dependencies:
-    "@chevrotain/gast": "npm:11.1.0"
-    "@chevrotain/types": "npm:11.1.0"
-    lodash-es: "npm:4.17.21"
-  checksum: 10c0/98fdc3dbb8248ef26e05e5d39ef4e84dcb9f5f6ec7a2d492765143ee5505252447fee381c05304f9719bd6eea96ee33eed5f7c6b972f81ac8e3c398d9a1641f1
+    "@chevrotain/gast": "npm:11.1.1"
+    "@chevrotain/types": "npm:11.1.1"
+    lodash-es: "npm:4.17.23"
+  checksum: 10c0/31bdfadf2913529dec6f508aa33a3a8823eea2a75087a7a1283b76a787e62371f0b1fcb82a36be85cf01655bf62691f24d2c24b45aed22f13e5ffccf9c36a922
   languageName: node
   linkType: hard
 
-"@chevrotain/gast@npm:11.1.0":
-  version: 11.1.0
-  resolution: "@chevrotain/gast@npm:11.1.0"
+"@chevrotain/gast@npm:11.1.1":
+  version: 11.1.1
+  resolution: "@chevrotain/gast@npm:11.1.1"
   dependencies:
-    "@chevrotain/types": "npm:11.1.0"
-    lodash-es: "npm:4.17.21"
-  checksum: 10c0/e18726bd762959b4a57935d3bacbf01b271d64b352ab673a297451e67b93c8b39d13c4a332ff28a19a4272184b8978964576a3505ea3f0145efb8c80345556a5
+    "@chevrotain/types": "npm:11.1.1"
+    lodash-es: "npm:4.17.23"
+  checksum: 10c0/3a1f870bdc4a7dc349ae0c2e48f875e120c24f1fe076a095f3476ffb66de72b935fe083a7bf0669e624941527044ee2de7cc7020e35a4741d4ac66891d7053da
   languageName: node
   linkType: hard
 
-"@chevrotain/regexp-to-ast@npm:11.1.0":
-  version: 11.1.0
-  resolution: "@chevrotain/regexp-to-ast@npm:11.1.0"
-  checksum: 10c0/92dbcb54be3f16ff04b4daae6e4e5f50fa4993cd21ef62484a6f73a162eb7356745f9507e4b9917ee337e8b21f565b477476ecf02eaacbc2f7a3d4dc9acded71
+"@chevrotain/regexp-to-ast@npm:11.1.1":
+  version: 11.1.1
+  resolution: "@chevrotain/regexp-to-ast@npm:11.1.1"
+  checksum: 10c0/56d6900848a621bd5ee0e6babff62389245b97374290ebdc3afcedf5ba199297b47601b1f908c1021790051414fbafeea81e437c98b92817561301ee5050b5b2
   languageName: node
   linkType: hard
 
-"@chevrotain/types@npm:11.1.0":
-  version: 11.1.0
-  resolution: "@chevrotain/types@npm:11.1.0"
-  checksum: 10c0/652538bf8cc20541e63071a8881f0e392876eef08e1e0e341b3a6922b9b1d456a8b365d9ab836f780ca6bb061721e011045b05cbdc0ccf68521290eb82269d18
+"@chevrotain/types@npm:11.1.1":
+  version: 11.1.1
+  resolution: "@chevrotain/types@npm:11.1.1"
+  checksum: 10c0/7cc3692ed8dec7ff6251b583bfd9dea4f7e77f5a172b017e90fa40ab6cc7eef626ec66623228a553e61805aaf126d295941f05defaa22cdab46c2fbf908f66c3
   languageName: node
   linkType: hard
 
-"@chevrotain/utils@npm:11.1.0":
-  version: 11.1.0
-  resolution: "@chevrotain/utils@npm:11.1.0"
-  checksum: 10c0/930ce44db417e1a46818f81bbefeb7e2a3858fdcd06a9a8f9c3fae94a59012fe4e6501558b7b2f7acddfaf27e0880a1d67373eba70f39e15cc6bf3adf1bb006b
+"@chevrotain/utils@npm:11.1.1":
+  version: 11.1.1
+  resolution: "@chevrotain/utils@npm:11.1.1"
+  checksum: 10c0/b862ba08bb6c6443a8316fcdc040ce940b61d06a15c746fb1cf63bc0e01e37b6976be4ec73285933c25201d2a17d2bfd65bf2a704de72320fc013e31e86fcedf
   languageName: node
   linkType: hard
 
@@ -863,11 +863,11 @@ __metadata:
     "@ethui/ui": "npm:^0.0.141"
     "@fontsource/source-code-pro": "npm:^5.2.5"
     "@lukeed/uuid": "npm:^2.0.1"
-    "@metamask/eth-json-rpc-middleware": "npm:^22.0.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^23.0.0"
     "@metamask/json-rpc-engine": "npm:^10.2.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/post-message-stream": "npm:^10.0.0"
-    "@metamask/utils": "npm:^11.8.1"
+    "@metamask/utils": "npm:^11.9.0"
     "@tailwindcss/vite": "npm:^4.1.5"
     "@types/chrome": "npm:^0.1.0"
     "@types/json-merge-patch": "npm:^1.0.0"
@@ -896,7 +896,7 @@ __metadata:
     typescript: "npm:5.9.2"
     viem: "npm:^2.44.4"
     vite: "npm:^7.3.0"
-    vite-plugin-node-polyfills: "npm:^0.24.0"
+    vite-plugin-node-polyfills: "npm:^0.25.0"
     vite-tsconfig-paths: "npm:^6.0.3"
     web-ext: "npm:^9.2.0"
     webextension-polyfill: "npm:^0.12.0"
@@ -1202,9 +1202,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^22.0.0":
-  version: 22.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:22.0.0"
+"@metamask/eth-json-rpc-middleware@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:23.0.0"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^15.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
@@ -1213,11 +1213,11 @@ __metadata:
     "@metamask/message-manager": "npm:^14.1.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.8.1"
+    "@metamask/utils": "npm:^11.9.0"
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10c0/037b1f39b6df5ff8c13ea5b587b460d9bac0e6e8d48d82247877b7c013fac80cd3782c4cc9ea8975e753dc77b8ad26d52fed7d297582fa5d7b221af28a7f11d5
+  checksum: 10c0/6562e103b550415c6161cc5a2008cebe45a004cf6ce9de8a9f206e5c40b65bdb6b0b61c41d6f2a2021959db29a2a824a69eb8248b56ff64862f93e75e4a5aff7
   languageName: node
   linkType: hard
 
@@ -1414,6 +1414,25 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10c0/71af490e071e7a6d3c31e0fbcb0e25d8f4b7b7409f94e81adcaa31e67bd1dcd71c3789ab404d038ab6f780ed9a202d1f2994067f8ca399b4971d7c69733fbaae
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^11.9.0":
+  version: 11.9.0
+  resolution: "@metamask/utils@npm:11.9.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    "@types/lodash": "npm:^4.17.20"
+    debug: "npm:^4.3.4"
+    lodash: "npm:^4.17.21"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    uuid: "npm:^9.0.1"
+  checksum: 10c0/8aa17d68a374a2401a159311298de74da312f182090b00cb9948f5d806b03983c807f97d23c1d68e8f5a86723a1abdac07eefe5537995c6ac81ee3a5a427dda0
   languageName: node
   linkType: hard
 
@@ -3920,16 +3939,16 @@ __metadata:
   linkType: hard
 
 "chevrotain@npm:^11.0.3":
-  version: 11.1.0
-  resolution: "chevrotain@npm:11.1.0"
+  version: 11.1.1
+  resolution: "chevrotain@npm:11.1.1"
   dependencies:
-    "@chevrotain/cst-dts-gen": "npm:11.1.0"
-    "@chevrotain/gast": "npm:11.1.0"
-    "@chevrotain/regexp-to-ast": "npm:11.1.0"
-    "@chevrotain/types": "npm:11.1.0"
-    "@chevrotain/utils": "npm:11.1.0"
-    lodash-es: "npm:4.17.21"
-  checksum: 10c0/82f6c7975a89dcc3d3e621c8b6a1f1eb176c02e57e5ceea3c85726914800a6bd1cce30d0c78e6747e6f0622c7ab9b5b4da01564c4982bf117a3316306a1e6b54
+    "@chevrotain/cst-dts-gen": "npm:11.1.1"
+    "@chevrotain/gast": "npm:11.1.1"
+    "@chevrotain/regexp-to-ast": "npm:11.1.1"
+    "@chevrotain/types": "npm:11.1.1"
+    "@chevrotain/utils": "npm:11.1.1"
+    lodash-es: "npm:4.17.23"
+  checksum: 10c0/cfd1a1206b0df75f2a08e40a39b1e2c69c1652495641b090fc25dcfae6c267ddb659f3a7d00e926d643d64f245636f89473609e7133f8157c5fd999007c9c555
   languageName: node
   linkType: hard
 
@@ -6452,10 +6471,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:4.17.21":
-  version: 4.17.21
-  resolution: "lodash-es@npm:4.17.21"
-  checksum: 10c0/fb407355f7e6cd523a9383e76e6b455321f0f153a6c9625e21a8827d10c54c2a2341bd2ae8d034358b60e07325e1330c14c224ff582d04612a46a4f0479ff2f2
+"lodash-es@npm:4.17.23":
+  version: 4.17.23
+  resolution: "lodash-es@npm:4.17.23"
+  checksum: 10c0/3150fb6660c14c7a6b5f23bd11597d884b140c0e862a17fdb415aaa5ef7741523182904a6b7929f04e5f60a11edb5a79499eb448734381c99ffb3c4734beeddd
   languageName: node
   linkType: hard
 
@@ -6870,7 +6889,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-stdlib-browser@npm:^1.2.0":
+"node-stdlib-browser@npm:^1.3.1":
   version: 1.3.1
   resolution: "node-stdlib-browser@npm:1.3.1"
   dependencies:
@@ -8804,8 +8823,8 @@ __metadata:
   linkType: hard
 
 "viem@npm:^2.44.4, viem@npm:^2.9.20":
-  version: 2.44.4
-  resolution: "viem@npm:2.44.4"
+  version: 2.45.0
+  resolution: "viem@npm:2.45.0"
   dependencies:
     "@noble/curves": "npm:1.9.1"
     "@noble/hashes": "npm:1.8.0"
@@ -8820,19 +8839,19 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/046eec6871f7ffba466bd579f5836710477078ec53390ace96a6c815f37c336b6cca6c605725aaba3fb919eb186199ebab9840aef08facfe8a8bf5e636506f73
+  checksum: 10c0/099c73d2980493a372d7c91d7593c62c9bb534a91293f6ae308a88292e16a4c89301db8899fec98597a9e6ee51f02bd9ed857f498946b2ee905c9cae00e5289d
   languageName: node
   linkType: hard
 
-"vite-plugin-node-polyfills@npm:^0.24.0":
-  version: 0.24.0
-  resolution: "vite-plugin-node-polyfills@npm:0.24.0"
+"vite-plugin-node-polyfills@npm:^0.25.0":
+  version: 0.25.0
+  resolution: "vite-plugin-node-polyfills@npm:0.25.0"
   dependencies:
     "@rollup/plugin-inject": "npm:^5.0.5"
-    node-stdlib-browser: "npm:^1.2.0"
+    node-stdlib-browser: "npm:^1.3.1"
   peerDependencies:
     vite: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
-  checksum: 10c0/33181013f72012d6b59fc5678088d39e56e44b18ec07b86a9ff3d093e8adda8071a0da9af75d375f51dd330f95b1cf05e6cd572463124dbe9ba1eb33a35e6ffc
+  checksum: 10c0/4009951255f2545ce4ec82f48f013b1c2b4509017e42c68cac6af8cc0d3f824ef2002915917c6da317c09ff0cde32eed6e98eb5be0d935a3c5cb0b412ebc1625
   languageName: node
   linkType: hard
 
