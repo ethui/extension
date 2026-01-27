@@ -2,9 +2,9 @@ import { action, notifications, runtime, tabs } from "webextension-polyfill";
 
 import { loadSettings } from "#/settings";
 
-export type ConnectionState = "connected" | "disconnected" | "unknown";
+type ConnectionState = "connected" | "disconnected" | "unknown";
 
-export interface WalletInfo {
+interface WalletInfo {
   accounts: string[];
   chainId: string;
   balance: string;
@@ -14,10 +14,6 @@ let globalConnectionState: ConnectionState = "unknown";
 let hasShownNotification = false;
 
 const NOTIFICATION_ID = "ethui-connection-status";
-
-export function getConnectionState(): ConnectionState {
-  return globalConnectionState;
-}
 
 export function setConnectionState(state: ConnectionState) {
   const previousState = globalConnectionState;

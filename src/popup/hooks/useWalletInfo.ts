@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { runtime } from "webextension-polyfill";
 
-export interface WalletInfo {
+interface WalletInfo {
   accounts: string[];
   chainId: string;
   balance: string;
