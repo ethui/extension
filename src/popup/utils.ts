@@ -29,6 +29,6 @@ export function formatBalance(balanceHex: string): string {
 }
 
 export function getChainName(chainId: string): string {
-  const id = parseInt(chainId, 16);
+  const id = Number.parseInt(chainId, 16);
   return CHAIN_NAMES[id] || `Chain ${id}`;
 }

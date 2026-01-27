@@ -1,7 +1,4 @@
-import {
-  Alert,
-  AlertDescription,
-} from "@ethui/ui/components/shadcn/alert";
+import { Alert, AlertDescription } from "@ethui/ui/components/shadcn/alert";
 import { Button } from "@ethui/ui/components/shadcn/button";
 import { CircleX } from "lucide-react";
 
@@ -28,7 +25,11 @@ export function DisconnectedView({ connectionState }: DisconnectedViewProps) {
             </AlertDescription>
           </Alert>
           <Button asChild size="sm">
-            <a href="https://ethui.dev" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://ethui.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Get ethui Desktop
             </a>
           </Button>

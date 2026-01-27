@@ -3,7 +3,10 @@ import { type Runtime, runtime } from "webextension-polyfill";
 import { ArrayQueue, ConstantBackoff, WebsocketBuilder } from "websocket-ts";
 
 import { defaultSettings, loadSettings, type Settings } from "#/settings";
-import { setConnectionState, setupConnectionStateListener } from "./connectionState";
+import {
+  setConnectionState,
+  setupConnectionStateListener,
+} from "./connectionState";
 import { startHeartbeat } from "./heartbeat";
 
 // init on load

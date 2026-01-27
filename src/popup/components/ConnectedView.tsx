@@ -65,7 +65,9 @@ export function ConnectedView() {
           {balance && (
             <div className="rounded-lg bg-secondary/50 p-3">
               <div className="mb-1 text-muted-foreground text-xs">Balance</div>
-              <div className="font-medium text-sm">{formatBalance(balance)}</div>
+              <div className="font-medium text-sm">
+                {formatBalance(balance)}
+              </div>
             </div>
           )}
         </div>

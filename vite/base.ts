@@ -1,5 +1,5 @@
 import path from "node:path";
-// @ts-ignore - module resolution issue with .mts types
+// @ts-expect-error - module resolution issue with .mts types
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
