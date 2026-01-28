@@ -1,7 +1,6 @@
 import log from "loglevel";
-import { action, type Runtime, runtime, storage } from "webextension-polyfill";
+import { type Runtime, runtime, storage } from "webextension-polyfill";
 import { ArrayQueue, WebsocketBuilder } from "websocket-ts";
-
 import {
   defaultSettings,
   getEndpoint,
@@ -14,30 +13,18 @@ import {
   setupConnectionStateListener,
 } from "./connectionState";
 import { startHeartbeat } from "./heartbeat";
+import { updateIcon } from "./utils";
 
 // init on load
 (async () => init())();
 
 let settings: Settings = defaultSettings;
 
-// Track active connections for settings change handling
 const activeConnections: Map<number, { close: () => void }> = new Map();
 
 /**
  * Loads the current settings, and listens for incoming connections (from the injected contentscript)
  */
-function updateIcon(devMode: boolean) {
-  const color = devMode ? "purple" : "black";
-  action.setIcon({
-    path: {
-      16: `/icons/ethui-${color}-16.png`,
-      48: `/icons/ethui-${color}-48.png`,
-      96: `/icons/ethui-${color}-96.png`,
-      128: `/icons/ethui-${color}-128.png`,
-    },
-  });
-}
-
 async function init() {
   startHeartbeat();
   settings = await loadSettings();
