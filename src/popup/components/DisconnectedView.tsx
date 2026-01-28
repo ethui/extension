@@ -7,15 +7,28 @@ import { Header } from "./Header";
 
 interface DisconnectedViewProps {
   connectionState: ConnectionState;
+  onExpand?: () => void;
+  onSettings: () => void;
+  devMode?: boolean;
 }
 
-export function DisconnectedView({ connectionState }: DisconnectedViewProps) {
+export function DisconnectedView({
+  connectionState,
+  onExpand,
+  onSettings,
+  devMode,
+}: DisconnectedViewProps) {
   const title =
     connectionState === "disconnected" ? "Not Connected" : "Checking...";
 
   return (
     <div className="p-4">
-      <Header title={title} />
+      <Header
+        title={title}
+        devMode={devMode}
+        onExpand={onExpand}
+        onSettings={onSettings}
+      />
       {connectionState === "disconnected" && (
         <div className="space-y-3">
           <Alert variant="destructive">

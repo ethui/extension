@@ -3,10 +3,22 @@
   <head>
     <title>ethui</title>
     <style>
+      html {
+        font-size: 18px;
+      }
       body {
         margin: 0;
         width: 300px;
         min-height: 150px;
+      }
+      /* Expanded mode: full page in a tab */
+      @media (min-width: 400px) {
+        body {
+          width: 100%;
+          max-width: 400px;
+          margin: 0 auto;
+          min-height: 100vh;
+        }
       }
     </style>
   </head>

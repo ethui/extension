@@ -1,18 +1,26 @@
 import log from "loglevel";
-import { type Runtime, runtime } from "webextension-polyfill";
-import { ArrayQueue, ConstantBackoff, WebsocketBuilder } from "websocket-ts";
-
-import { defaultSettings, loadSettings, type Settings } from "#/settings";
+import { type Runtime, runtime, storage } from "webextension-polyfill";
+import { ArrayQueue, WebsocketBuilder } from "websocket-ts";
 import {
+  defaultSettings,
+  getEndpoint,
+  loadSettings,
+  type Settings,
+} from "#/settings";
+import {
+  resetConnectionState,
   setConnectionState,
   setupConnectionStateListener,
 } from "./connectionState";
 import { startHeartbeat } from "./heartbeat";
+import { updateIcon } from "./utils";
 
 // init on load
 (async () => init())();
 
 let settings: Settings = defaultSettings;
+
+const activeConnections: Map<number, { close: () => void }> = new Map();
 
 /**
  * Loads the current settings, and listens for incoming connections (from the injected contentscript)
@@ -21,8 +29,10 @@ async function init() {
   startHeartbeat();
   settings = await loadSettings();
   log.setLevel(settings.logLevel);
+  updateIcon(settings.devMode);
 
   setupConnectionStateListener();
+  setupSettingsChangeListener();
 
   // handle each incoming content script connection
   runtime.onConnect.addListener((port: Runtime.Port) => {
@@ -35,6 +45,43 @@ async function init() {
     }
 
     setupProviderConnection(port);
+  });
+}
+
+/**
+ * Listen for settings changes and reconnect all active connections when endpoint changes
+ */
+function setupSettingsChangeListener() {
+  storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== "sync") return;
+
+    if (changes.logLevel?.newValue) {
+      settings.logLevel = changes.logLevel.newValue as Settings["logLevel"];
+      log.setLevel(settings.logLevel);
+      log.debug("Log level changed to", settings.logLevel);
+    }
+
+    if (changes.devMode?.newValue !== undefined) {
+      settings.devMode = changes.devMode.newValue as boolean;
+      log.debug(
+        "Dev mode changed to",
+        settings.devMode,
+        "- endpoint:",
+        getEndpoint(settings),
+      );
+
+      // Update icon color
+      updateIcon(settings.devMode);
+
+      // Reset connection state to trigger fresh check
+      resetConnectionState();
+
+      // Close all active connections - they will reconnect with new endpoint on next message
+      for (const [tabId, conn] of activeConnections) {
+        log.debug(`Closing connection for tab ${tabId}`);
+        conn.close();
+      }
+    }
   });
 }
 
@@ -88,6 +135,19 @@ function setupProviderConnection(port: Runtime.Port) {
   let queue: string[] = [];
   let ws: ReturnType<typeof WebsocketBuilder.prototype.build> | undefined;
   let isConnecting = false;
+  let intentionalClose = false;
+
+  const closeWebSocket = () => {
+    if (ws) {
+      intentionalClose = true;
+      ws.close();
+      ws = undefined;
+    }
+    isConnecting = false;
+  };
+
+  // Register this connection for settings change handling
+  activeConnections.set(tabId, { close: closeWebSocket });
 
   const initWebSocket = () => {
     if (ws || isConnecting) return;
@@ -111,19 +171,30 @@ function setupProviderConnection(port: Runtime.Port) {
         log.debug(`WS connection closed (${url})`);
         ws = undefined;
         isConnecting = false;
+
+        if (intentionalClose) {
+          // Settings change - don't reconnect, don't set disconnected state
+          intentionalClose = false;
+          return;
+        }
+
         setConnectionState("disconnected");
-      })
-      .onReconnect(() => {
-        log.debug("WS connection reconnected");
-        setConnectionState("connected");
+        // Auto-retry after 1 second with current endpoint
+        setTimeout(() => {
+          if (!ws && !isConnecting) {
+            log.debug("Attempting to reconnect...");
+            initWebSocket();
+          }
+        }, 1000);
       })
       .onError((e) => {
         log.error("[WS] error:", e);
         isConnecting = false;
-        setConnectionState("disconnected");
+        if (!intentionalClose) {
+          setConnectionState("disconnected");
+        }
       })
       .withBuffer(new ArrayQueue())
-      .withBackoff(new ConstantBackoff(1000))
       .onMessage((_ins, event) => {
         if (event.data === "ping") {
           log.debug("[ws] ping");
@@ -172,19 +243,17 @@ function setupProviderConnection(port: Runtime.Port) {
 
   port.onDisconnect.addListener(() => {
     log.debug("port disconnected");
-    if (ws) {
-      ws.close();
-      ws = undefined;
-    }
+    closeWebSocket();
+    activeConnections.delete(tabId);
     queue = [];
   });
 }
 
 /**
- * The URL of the ethui server if given from the settings, with connection metadata being appended as URL params
+ * The URL of the ethui server based on current settings, with connection metadata being appended as URL params
  */
 function endpoint(port: Runtime.Port) {
-  return `${settings.endpoint}?${connParams(port)}`;
+  return `${getEndpoint(settings)}?${connParams(port)}`;
 }
 
 /**

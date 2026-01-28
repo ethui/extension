@@ -6,7 +6,17 @@ import { useWalletInfo } from "../hooks/useWalletInfo";
 import { formatBalance, getChainName, truncateAddress } from "../utils";
 import { Header } from "./Header";
 
-export function ConnectedView() {
+interface ConnectedViewProps {
+  onExpand?: () => void;
+  onSettings: () => void;
+  devMode?: boolean;
+}
+
+export function ConnectedView({
+  onExpand,
+  onSettings,
+  devMode,
+}: ConnectedViewProps) {
   const { walletInfo, loading } = useWalletInfo();
   const [copied, setCopied] = useState(false);
 
@@ -33,6 +43,9 @@ export function ConnectedView() {
             </span>
           )
         }
+        devMode={devMode}
+        onExpand={onExpand}
+        onSettings={onSettings}
       />
 
       {loading ? (
