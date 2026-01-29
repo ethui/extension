@@ -22,7 +22,8 @@ function getInitialView(): View {
 const isExpanded = window.location.search.length > 0;
 
 function App() {
-  const connectionState = useConnectionState();
+  const { state: connectionState, source: connectionSource } =
+    useConnectionState();
   const [view, setView] = useState<View>(getInitialView);
   const [devMode, setDevMode] = useState(defaultSettings.devMode);
 
@@ -81,6 +82,7 @@ function App() {
         onExpand={expandHandler}
         onSettings={handleSettings}
         devMode={devMode}
+        isFallback={connectionSource === "fallback"}
       />
     );
   }
