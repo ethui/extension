@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { runtime } from "webextension-polyfill";
 
 export type ConnectionState = "connected" | "disconnected" | "unknown";
-export type ConnectionSource = "app" | "fallback" | null;
+type ConnectionSource = "app" | "fallback" | null;
 
 interface ConnectionInfo {
   state: ConnectionState;

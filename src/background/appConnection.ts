@@ -12,8 +12,8 @@ import { ArrayQueue, WebsocketBuilder } from "websocket-ts";
 import { getEndpoint, type Settings } from "#/settings";
 import { setConnectionState } from "./connectionState";
 
-export type MessageHandler = (data: unknown) => void;
-export type DisconnectHandler = () => void;
+type MessageHandler = (data: unknown) => void;
+type DisconnectHandler = () => void;
 
 export interface AppConnectionResult {
   send: (msg: string) => void;

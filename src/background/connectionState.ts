@@ -2,8 +2,8 @@ import { action, notifications, runtime, tabs } from "webextension-polyfill";
 
 import { getEndpoint, loadSettings } from "#/settings";
 
-export type ConnectionState = "connected" | "disconnected" | "unknown";
-export type ConnectionSource = "app" | "fallback" | null;
+type ConnectionState = "connected" | "disconnected" | "unknown";
+type ConnectionSource = "app" | "fallback" | null;
 
 interface WalletInfo {
   accounts: string[];
@@ -75,10 +75,6 @@ export function setConnectionState(
   if (state === "connected") {
     hasShownNotification = false;
   }
-}
-
-export function getConnectionSource(): ConnectionSource {
-  return globalConnectionSource;
 }
 
 function updateBadge() {

@@ -15,7 +15,7 @@ import { setConnectionState } from "./connectionState";
 
 const FALLBACK_ENDPOINT = "ws://localhost:8545";
 
-export type MessageHandler = (data: unknown) => void;
+type MessageHandler = (data: unknown) => void;
 
 export interface FallbackConnectionResult {
   send: (msg: string) => void;
@@ -148,11 +148,4 @@ export function checkFallbackAvailable(): Promise<boolean> {
       resolve(false);
     };
   });
-}
-
-/**
- * Returns the fallback endpoint URL.
- */
-export function getFallbackEndpoint(): string {
-  return FALLBACK_ENDPOINT;
 }
