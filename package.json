@@ -24,7 +24,7 @@
     "@ethui/ui": "^0.0.141",
     "@fontsource/source-code-pro": "^5.2.5",
     "@lukeed/uuid": "^2.0.1",
-    "@metamask/eth-json-rpc-middleware": "^23.0.0",
+    "@metamask/eth-json-rpc-middleware": "^23.1.0",
     "@metamask/json-rpc-engine": "^10.2.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.8",
     "@metamask/post-message-stream": "^10.0.0",
