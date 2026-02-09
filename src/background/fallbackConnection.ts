@@ -13,7 +13,7 @@ import log from "loglevel";
 import { ArrayQueue, WebsocketBuilder } from "websocket-ts";
 import { setConnectionState } from "./connectionState";
 
-const FALLBACK_ENDPOINT = "ws://localhost:8545";
+import { FALLBACK_ENDPOINT } from "#/settings";
 
 type MessageHandler = (data: unknown) => void;
 

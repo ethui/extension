@@ -145,7 +145,7 @@ async function checkConnection(): Promise<ConnectionState> {
 
 async function fetchWalletInfo(): Promise<WalletInfo | null> {
   const settings = await loadSettings();
-  const endpoint = getEndpoint(settings);
+  const endpoint = getEndpoint(settings, globalConnectionSource);
 
   return new Promise((resolve) => {
     const ws = new WebSocket(endpoint);
