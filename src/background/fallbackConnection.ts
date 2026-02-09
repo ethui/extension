@@ -11,9 +11,8 @@
 
 import log from "loglevel";
 import { ArrayQueue, WebsocketBuilder } from "websocket-ts";
-import { setConnectionState } from "./connectionState";
-
 import { FALLBACK_ENDPOINT } from "#/settings";
+import { setConnectionState } from "./connectionState";
 
 type MessageHandler = (data: unknown) => void;
 
