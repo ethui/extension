@@ -3,6 +3,7 @@ import { action, notifications, runtime, tabs } from "webextension-polyfill";
 import { getEndpoint, loadSettings } from "#/settings";
 
 type ConnectionState = "connected" | "disconnected" | "unknown";
+type ConnectionSource = "app" | "fallback" | null;
 
 interface WalletInfo {
   accounts: string[];
@@ -11,12 +12,14 @@ interface WalletInfo {
 }
 
 let globalConnectionState: ConnectionState = "unknown";
+let globalConnectionSource: ConnectionSource = null;
 let hasShownNotification = false;
 
 const NOTIFICATION_ID = "ethui-connection-status";
 
 export function resetConnectionState() {
   globalConnectionState = "unknown";
+  globalConnectionSource = null;
   hasShownNotification = false;
   updateBadge();
 
@@ -25,21 +28,32 @@ export function resetConnectionState() {
     .sendMessage({
       type: "connection-state",
       state: "unknown",
+      source: null,
     })
     .catch(() => {
       // Popup may not be open, ignore error
     });
 }
 
-export function setConnectionState(state: ConnectionState) {
+export function setConnectionState(
+  state: ConnectionState,
+  source: ConnectionSource = null,
+) {
   const previousState = globalConnectionState;
   globalConnectionState = state;
+
+  if (state === "connected") {
+    globalConnectionSource = source;
+  } else if (state === "disconnected") {
+    globalConnectionSource = null;
+  }
 
   // Broadcast state change to any open popups
   runtime
     .sendMessage({
       type: "connection-state",
       state: globalConnectionState,
+      source: globalConnectionSource,
     })
     .catch(() => {
       // Popup may not be open, ignore error
@@ -67,6 +81,13 @@ function updateBadge() {
   if (globalConnectionState === "disconnected") {
     action.setBadgeText({ text: "!" });
     action.setBadgeBackgroundColor({ color: "#ef4444" });
+  } else if (
+    globalConnectionState === "connected" &&
+    globalConnectionSource === "fallback"
+  ) {
+    // Show indicator when using fallback
+    action.setBadgeText({ text: "F" });
+    action.setBadgeBackgroundColor({ color: "#f59e0b" }); // amber/warning color
   } else {
     action.setBadgeText({ text: "" });
   }
@@ -96,7 +117,7 @@ async function checkConnection(): Promise<ConnectionState> {
       if (resolved) return;
       resolved = true;
       clearTimeout(timeout);
-      setConnectionState(state);
+      setConnectionState(state, state === "connected" ? "app" : null);
       resolve(state);
     };
 
@@ -124,7 +145,7 @@ async function checkConnection(): Promise<ConnectionState> {
 
 async function fetchWalletInfo(): Promise<WalletInfo | null> {
   const settings = await loadSettings();
-  const endpoint = getEndpoint(settings);
+  const endpoint = getEndpoint(settings, globalConnectionSource);
 
   return new Promise((resolve) => {
     const ws = new WebSocket(endpoint);
@@ -233,12 +254,17 @@ export function setupConnectionStateListener() {
       // If state is unknown, check connection before responding
       if (globalConnectionState === "unknown") {
         checkConnection().then((state) => {
-          sendResponse({ type: "connection-state", state });
+          sendResponse({
+            type: "connection-state",
+            state,
+            source: globalConnectionSource,
+          });
         });
       } else {
         sendResponse({
           type: "connection-state",
           state: globalConnectionState,
+          source: globalConnectionSource,
         });
       }
       return true;
@@ -253,7 +279,11 @@ export function setupConnectionStateListener() {
 
     if (msg.type === "check-connection") {
       checkConnection().then((state) => {
-        sendResponse({ type: "connection-state", state });
+        sendResponse({
+          type: "connection-state",
+          state,
+          source: globalConnectionSource,
+        });
       });
       return true;
     }

@@ -13,8 +13,13 @@ export const defaultSettings: Settings = {
 
 const ENDPOINT_PROD = "ws://localhost:9002";
 const ENDPOINT_DEV = "ws://localhost:9102";
+export const FALLBACK_ENDPOINT = "ws://localhost:8545";
 
-export function getEndpoint(settings: Settings): string {
+export function getEndpoint(
+  settings: Settings,
+  source?: "app" | "fallback" | null,
+): string {
+  if (source === "fallback") return FALLBACK_ENDPOINT;
   return settings.devMode ? ENDPOINT_DEV : ENDPOINT_PROD;
 }
 

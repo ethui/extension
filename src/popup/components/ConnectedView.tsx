@@ -10,12 +10,14 @@ interface ConnectedViewProps {
   onExpand?: () => void;
   onSettings: () => void;
   devMode?: boolean;
+  isFallback?: boolean;
 }
 
 export function ConnectedView({
   onExpand,
   onSettings,
   devMode,
+  isFallback,
 }: ConnectedViewProps) {
   const { walletInfo, loading } = useWalletInfo();
   const [copied, setCopied] = useState(false);
@@ -47,6 +49,17 @@ export function ConnectedView({
         onExpand={onExpand}
         onSettings={onSettings}
       />
+
+      {isFallback && (
+        <div className="mb-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-2">
+          <div className="font-medium text-amber-600 text-xs dark:text-amber-400">
+            Fallback Mode
+          </div>
+          <div className="mt-0.5 text-muted-foreground text-xs">
+            Using localhost:8545. ethui app is not running.
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="py-4 text-muted-foreground text-sm">

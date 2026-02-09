@@ -1,6 +1,17 @@
+/**
+ * Background service worker entry point.
+ *
+ * This module handles the main connection logic between web pages and either
+ * the ethui desktop app or a fallback local Ethereum node.
+ *
+ * Connection priority:
+ * 1. ethui desktop app (ws://localhost:9002 or 9102 in dev mode)
+ * 2. Fallback to local node (ws://localhost:8545) if ethui is unavailable
+ * 3. Periodically check if ethui comes back online and switch back
+ */
+
 import log from "loglevel";
 import { type Runtime, runtime, storage } from "webextension-polyfill";
-import { ArrayQueue, WebsocketBuilder } from "websocket-ts";
 import {
   defaultSettings,
   getEndpoint,
@@ -8,19 +19,38 @@ import {
   type Settings,
 } from "#/settings";
 import {
+  type AppConnectionResult,
+  checkAppAvailable,
+  createAppConnection,
+} from "./appConnection";
+import {
   resetConnectionState,
   setConnectionState,
   setupConnectionStateListener,
 } from "./connectionState";
+import {
+  checkFallbackAvailable,
+  createFallbackConnection,
+  type FallbackConnectionResult,
+} from "./fallbackConnection";
 import { startHeartbeat } from "./heartbeat";
 import { updateIcon } from "./utils";
+
+// Interval to check if ethui app comes back online when using fallback
+const APP_CHECK_INTERVAL = 5000;
 
 // init on load
 (async () => init())();
 
 let settings: Settings = defaultSettings;
 
-const activeConnections: Map<number, { close: () => void }> = new Map();
+interface ActiveConnection {
+  close: () => void;
+  send: (msg: string) => void;
+  isFallback: boolean;
+}
+
+const activeConnections: Map<number, ActiveConnection> = new Map();
 
 /**
  * Loads the current settings, and listens for incoming connections (from the injected contentscript)
@@ -116,108 +146,250 @@ async function notifyDevtools(
 
 /**
  * Set up connection stream to new content scripts.
- * The stream data is attached to a WebsocketConnection to server run by the ethui desktop app
- *
- * The WS connection is created lazily (when the first data packet is sent).
- * This behaviour prevents initiating connections for browser tabs where `window.ethereum` is not actually used
+ * Handles connection with fallback logic:
+ * 1. Try to connect to ethui app
+ * 2. If unavailable, fall back to local node at ws://localhost:8545
+ * 3. Periodically check if ethui comes back and switch to it
  */
 function setupProviderConnection(port: Runtime.Port) {
   log.debug("setupProviderConnection", port.name);
   const tab = port.sender!.tab!;
   const tabId = tab.id!;
-  const url = tab.url;
 
   notifyDevtools(tabId, "start");
 
   type Request = { id: number; method: string; params?: unknown };
   const reqs: Map<Request["id"], Request> = new Map();
 
-  let queue: string[] = [];
-  let ws: ReturnType<typeof WebsocketBuilder.prototype.build> | undefined;
-  let isConnecting = false;
-  let intentionalClose = false;
+  let appConnection: AppConnectionResult | null = null;
+  let fallbackConnection: FallbackConnectionResult | null = null;
+  let usingFallback = false;
+  let appCheckTimer: ReturnType<typeof setInterval> | null = null;
+  let pendingMessages: string[] = [];
+  let isInitializing = false;
 
-  const closeWebSocket = () => {
-    if (ws) {
-      intentionalClose = true;
-      ws.close();
-      ws = undefined;
+  const handleMessage = (data: unknown) => {
+    const resp = data as { id?: number; error?: unknown; result?: unknown };
+    port.postMessage(resp);
+
+    if (resp.id !== undefined) {
+      const req = reqs.get(resp.id);
+      const logRequest = req?.params
+        ? [req?.method, req?.params]
+        : [req?.method];
+      const fn = resp.error ? log.error : log.debug;
+      fn(...logRequest, resp.error || resp.result);
     }
-    isConnecting = false;
+    notifyDevtools(tabId, "response", data);
+  };
+
+  /**
+   * Start periodic checking for ethui app availability when using fallback
+   */
+  const startAppCheck = () => {
+    if (appCheckTimer) return;
+
+    log.debug("[Fallback] Starting periodic ethui app check");
+    appCheckTimer = setInterval(async () => {
+      if (!usingFallback) {
+        stopAppCheck();
+        return;
+      }
+
+      log.debug("[Fallback] Checking if ethui app is available...");
+      const available = await checkAppAvailable(settings);
+      if (available && usingFallback) {
+        log.info("[Fallback] ethui app is back! Switching to app connection");
+        switchToAppConnection();
+      }
+    }, APP_CHECK_INTERVAL);
+  };
+
+  const stopAppCheck = () => {
+    if (appCheckTimer) {
+      clearInterval(appCheckTimer);
+      appCheckTimer = null;
+    }
+  };
+
+  /**
+   * Switch from fallback to app connection
+   */
+  const switchToAppConnection = () => {
+    // Close fallback connection
+    if (fallbackConnection) {
+      fallbackConnection.close();
+      fallbackConnection = null;
+    }
+
+    usingFallback = false;
+    stopAppCheck();
+
+    // Create new app connection
+    appConnection = createAppConnection(
+      settings,
+      port,
+      handleMessage,
+      handleAppDisconnect,
+    );
+
+    // Update the active connection reference
+    activeConnections.set(tabId, {
+      close: closeAllConnections,
+      send: (msg) => sendMessage(msg),
+      isFallback: false,
+    });
+  };
+
+  /**
+   * Switch from app to fallback connection
+   */
+  const switchToFallbackConnection = async () => {
+    // Check if fallback is available
+    const fallbackAvailable = await checkFallbackAvailable();
+    if (!fallbackAvailable) {
+      log.warn("[Fallback] Fallback endpoint also unavailable");
+      setConnectionState("disconnected");
+      // Retry app connection after delay
+      setTimeout(() => {
+        if (
+          !appConnection?.isConnected() &&
+          !fallbackConnection?.isConnected()
+        ) {
+          initializeConnection();
+        }
+      }, 1000);
+      return;
+    }
+
+    log.info("[Fallback] Switching to fallback connection");
+
+    // Close app connection
+    if (appConnection) {
+      appConnection.close();
+      appConnection = null;
+    }
+
+    usingFallback = true;
+
+    // Create fallback connection
+    fallbackConnection = createFallbackConnection(
+      handleMessage,
+      handleFallbackDisconnect,
+    );
+
+    // Update the active connection reference
+    activeConnections.set(tabId, {
+      close: closeAllConnections,
+      send: (msg) => sendMessage(msg),
+      isFallback: true,
+    });
+
+    // Send any pending messages
+    for (const msg of pendingMessages) {
+      fallbackConnection.send(msg);
+    }
+    pendingMessages = [];
+
+    // Start checking for ethui app availability
+    startAppCheck();
+  };
+
+  /**
+   * Handle app connection disconnect
+   */
+  const handleAppDisconnect = () => {
+    log.debug("[AppConnection] Disconnected, attempting fallback");
+    switchToFallbackConnection();
+  };
+
+  /**
+   * Handle fallback connection disconnect
+   */
+  const handleFallbackDisconnect = () => {
+    log.debug("[FallbackConnection] Disconnected");
+    setConnectionState("disconnected");
+
+    // Try to reconnect (prefer app, then fallback)
+    setTimeout(() => {
+      if (!appConnection?.isConnected() && !fallbackConnection?.isConnected()) {
+        initializeConnection();
+      }
+    }, 1000);
+  };
+
+  /**
+   * Initialize connection - try app first, then fallback
+   */
+  const initializeConnection = async () => {
+    if (isInitializing) return;
+    isInitializing = true;
+
+    try {
+      // First, try the ethui app
+      const appAvailable = await checkAppAvailable(settings);
+      if (appAvailable) {
+        log.debug("[Connection] ethui app is available, connecting");
+        appConnection = createAppConnection(
+          settings,
+          port,
+          handleMessage,
+          handleAppDisconnect,
+        );
+
+        // Update the active connection reference
+        activeConnections.set(tabId, {
+          close: closeAllConnections,
+          send: (msg) => sendMessage(msg),
+          isFallback: false,
+        });
+
+        // Send any pending messages
+        for (const msg of pendingMessages) {
+          appConnection.send(msg);
+        }
+        pendingMessages = [];
+      } else {
+        // Try fallback
+        await switchToFallbackConnection();
+      }
+    } finally {
+      isInitializing = false;
+    }
+  };
+
+  /**
+   * Send message through the active connection
+   */
+  const sendMessage = (msg: string) => {
+    if (usingFallback && fallbackConnection) {
+      fallbackConnection.send(msg);
+    } else if (appConnection) {
+      appConnection.send(msg);
+    } else {
+      // Queue message while initializing
+      pendingMessages.push(msg);
+      initializeConnection();
+    }
+  };
+
+  const closeAllConnections = () => {
+    stopAppCheck();
+    appConnection?.close();
+    fallbackConnection?.close();
+    appConnection = null;
+    fallbackConnection = null;
+    pendingMessages = [];
   };
 
   // Register this connection for settings change handling
-  activeConnections.set(tabId, { close: closeWebSocket });
+  activeConnections.set(tabId, {
+    close: closeAllConnections,
+    send: sendMessage,
+    isFallback: false,
+  });
 
-  const initWebSocket = () => {
-    if (ws || isConnecting) return;
-
-    isConnecting = true;
-    log.debug(`Initializing WS connection for ${url}`);
-
-    ws = new WebsocketBuilder(endpoint(port))
-      .onOpen(() => {
-        log.debug(`WS connection opened (${url})`);
-        isConnecting = false;
-        setConnectionState("connected");
-
-        // flush queue
-        while (queue.length > 0) {
-          const msg = queue.shift()!;
-          ws!.send(msg);
-        }
-      })
-      .onClose(() => {
-        log.debug(`WS connection closed (${url})`);
-        ws = undefined;
-        isConnecting = false;
-
-        if (intentionalClose) {
-          // Settings change - don't reconnect, don't set disconnected state
-          intentionalClose = false;
-          return;
-        }
-
-        setConnectionState("disconnected");
-        // Auto-retry after 1 second with current endpoint
-        setTimeout(() => {
-          if (!ws && !isConnecting) {
-            log.debug("Attempting to reconnect...");
-            initWebSocket();
-          }
-        }, 1000);
-      })
-      .onError((e) => {
-        log.error("[WS] error:", e);
-        isConnecting = false;
-        if (!intentionalClose) {
-          setConnectionState("disconnected");
-        }
-      })
-      .withBuffer(new ArrayQueue())
-      .onMessage((_ins, event) => {
-        if (event.data === "ping") {
-          log.debug("[ws] ping");
-          ws!.send("pong");
-          return;
-        }
-        log.debug("WS message", event.data);
-        // forward WS server messages back to the stream (content script)
-        const resp = JSON.parse(event.data);
-        port.postMessage(resp);
-
-        const req = reqs.get(resp.id);
-        const logRequest = req?.params
-          ? [req?.method, req?.params]
-          : [req?.method];
-        const fn = resp.error ? log.error : log.debug;
-        fn(...logRequest, resp.error || resp.result);
-        notifyDevtools(tabId, "response", resp);
-      })
-      .build();
-  };
-
-  // forwarding incoming stream data to the WS server
+  // forwarding incoming stream data to the active connection
   port.onMessage.addListener((data) => {
     const req = data as Request;
     if (req.id) {
@@ -225,64 +397,14 @@ function setupProviderConnection(port: Runtime.Port) {
     }
 
     const msg = JSON.stringify(data);
-
-    // Initialize WebSocket on first message if not already done
-    if (!ws && !isConnecting) {
-      initWebSocket();
-    }
-
-    // Queue message if WS is not ready, otherwise send directly
-    if (!ws || isConnecting) {
-      queue.push(msg);
-    } else {
-      ws.send(msg);
-    }
+    sendMessage(msg);
 
     notifyDevtools(tabId, "request", data);
   });
 
   port.onDisconnect.addListener(() => {
     log.debug("port disconnected");
-    closeWebSocket();
+    closeAllConnections();
     activeConnections.delete(tabId);
-    queue = [];
   });
-}
-
-/**
- * The URL of the ethui server based on current settings, with connection metadata being appended as URL params
- */
-function endpoint(port: Runtime.Port) {
-  return `${getEndpoint(settings)}?${connParams(port)}`;
-}
-
-/**
- * URL-encoded connection info
- *
- * This includes all info that may be useful for the ethui server.
- */
-function connParams(port: Runtime.Port) {
-  const sender = port.sender;
-  const tab = sender?.tab;
-
-  const params: Record<string, string | undefined> = {
-    origin: (port.sender as unknown as { origin: string }).origin,
-    url: tab?.url,
-    title: tab?.title,
-  };
-
-  return encodeUrlParams(params);
-}
-
-/**
- * URL-encode a set of params
- */
-function encodeUrlParams(p: Record<string, string | undefined>) {
-  const filtered: Record<string, string> = Object.fromEntries(
-    Object.entries(p).filter(([, v]) => v !== undefined),
-  ) as Record<string, string>;
-
-  return Object.entries(filtered)
-    .map((kv) => kv.map(encodeURIComponent).join("="))
-    .join("&");
 }
