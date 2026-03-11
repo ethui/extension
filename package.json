@@ -65,7 +65,7 @@
     "vite": "^7.3.0",
     "vite-plugin-node-polyfills": "^0.25.0",
     "vite-tsconfig-paths": "^6.1.0",
-    "web-ext": "^9.2.0",
+    "web-ext": "^9.3.0",
     "yargs": "^18.0.0"
   },
   "packageManager": "yarn@4.12.0"
